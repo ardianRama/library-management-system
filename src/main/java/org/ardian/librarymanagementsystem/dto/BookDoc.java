@@ -22,4 +22,6 @@ public class BookDoc {
 
     @JsonProperty("cover_i")
     private Integer coverId;
+
+    private String key;
 }

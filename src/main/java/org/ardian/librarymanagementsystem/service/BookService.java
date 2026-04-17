@@ -31,22 +31,23 @@ public class BookService {
 
     private Book mapToBook(BookDoc doc) {
 
-        String author = getAuthor(doc);
+        List<String> authors = getAuthors(doc);
         String coverUrl = getCoverUrl(doc.getCoverId());
 
         return new Book(
                 doc.getTitle(),
-                author,
+                authors,
                 doc.getFirstPublishYear(),
-                coverUrl
+                coverUrl,
+                doc.getKey()
         );
     }
 
-    private String getAuthor(BookDoc doc) {
+    private List<String> getAuthors(BookDoc doc) {
         if (doc.getAuthorName() == null || doc.getAuthorName().isEmpty()) {
-            return "Unknown";
+            return List.of("Unknown");
         }
-        return doc.getAuthorName().get(0);
+        return doc.getAuthorName();
     }
 
     private String getCoverUrl(Integer coverId) {
