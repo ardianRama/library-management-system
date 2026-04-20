@@ -4,6 +4,7 @@ import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.Book;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
+import org.ardian.librarymanagementsystem.exception.InvalidSearchException;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,10 @@ public class BookService {
 
     @Cacheable(value = "books", key = "#query")
     public List<Book> searchBooks(String query) {
+
+        if (query == null || query.isBlank()) {
+            throw new InvalidSearchException("Search query cannot be empty");
+        }
 
         return bookClient.searchBooks(query)
                 .stream()
