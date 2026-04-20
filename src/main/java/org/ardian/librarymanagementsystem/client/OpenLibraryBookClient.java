@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.dto.SearchResponse;
@@ -13,6 +14,7 @@ import java.util.List;
  * OpenLibrary client implementation for searching books.
  */
 
+@Slf4j
 @Component
 public class OpenLibraryBookClient implements BookClient {
 
@@ -46,6 +48,9 @@ public class OpenLibraryBookClient implements BookClient {
             return response.getDocs();
 
         } catch (Exception e) {
+
+            log.error("Failed to fetch books from OpenLibrary. query={}", query, e);
+
             throw new OpenLibraryException(
                     "Failed to fetch books from OpenLibrary",
                     e
