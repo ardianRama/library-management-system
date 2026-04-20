@@ -21,6 +21,7 @@ public class BookController {
     //http://localhost:8080/api/books/search?q=tolkien
     //http://localhost:8080/api/books/search?q=lord+of+the+rings
     //http://localhost:8080/api/books/search?q=history
+    //for admin to view books
     @GetMapping("/search")
     public List<Book> search(@RequestParam String q) {
         return bookService.searchBooks(q);

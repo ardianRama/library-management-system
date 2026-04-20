@@ -3,7 +3,8 @@ package org.ardian.librarymanagementsystem.client;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.dto.SearchResponse;
-import org.springframework.stereotype.Service;
+import org.ardian.librarymanagementsystem.exception.OpenLibraryException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
  * OpenLibrary client implementation for searching books.
  */
 
-@Service
+@Component
 public class OpenLibraryBookClient implements BookClient {
 
     private final WebClient webClient;
@@ -27,20 +28,28 @@ public class OpenLibraryBookClient implements BookClient {
     @Override
     public List<BookDoc> searchBooks(String query) {
 
-        SearchResponse response = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/search.json")
-                        .queryParam("q", query)
-                        .queryParam("limit", properties.getSearchLimit())
-                        .build())
-                .retrieve()
-                .bodyToMono(SearchResponse.class)
-                .block();
+        try {
+            SearchResponse response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/search.json")
+                            .queryParam("q", query)
+                            .queryParam("limit", properties.getSearchLimit())
+                            .build())
+                    .retrieve()
+                    .bodyToMono(SearchResponse.class)
+                    .block();
 
-        if (response == null || response.getDocs() == null) {
-            return List.of();
+            if (response == null || response.getDocs() == null) {
+                return List.of();
+            }
+
+            return response.getDocs();
+
+        } catch (Exception e) {
+            throw new OpenLibraryException(
+                    "Failed to fetch books from OpenLibrary",
+                    e
+            );
         }
-
-        return response.getDocs();
     }
 }
