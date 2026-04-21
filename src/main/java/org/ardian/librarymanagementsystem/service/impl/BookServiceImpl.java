@@ -30,7 +30,7 @@ public class BookServiceImpl implements BookService {
             throw new InvalidSearchException("Search query cannot be empty");
         }
 
-        return bookClient.searchBooks(query)
+        return bookClient.fetchBooks(query)
                 .stream()
                 .map(doc -> OpenLibraryMapper.bookDocToBookDto(doc, properties))
                 .toList();

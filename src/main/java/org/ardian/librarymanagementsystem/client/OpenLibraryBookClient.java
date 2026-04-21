@@ -28,7 +28,7 @@ public class OpenLibraryBookClient implements BookClient {
     }
 
     @Override
-    public List<BookDoc> searchBooks(String query) {
+    public List<BookDoc> fetchBooks(String query) {
 
         try {
             SearchResponse response = webClient.get()

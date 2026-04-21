@@ -9,5 +9,5 @@ import java.util.List;
  */
 
 public interface BookClient {
-    List<BookDoc> searchBooks(String query);
+    List<BookDoc> fetchBooks(String query);
 }
