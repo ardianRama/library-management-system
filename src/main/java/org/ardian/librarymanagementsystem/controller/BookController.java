@@ -1,7 +1,7 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.BookDto;
-import org.ardian.librarymanagementsystem.service.BookService;
+import org.ardian.librarymanagementsystem.service.impl.BookServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,10 +10,10 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController {
 
-    private final BookService bookService;
+    private final BookServiceImpl bookServiceImpl;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(BookServiceImpl bookServiceImpl) {
+        this.bookServiceImpl = bookServiceImpl;
     }
 
     //http://localhost:8080/api/books/search?q=harry+potter
@@ -24,7 +24,7 @@ public class BookController {
     //for admin to view books
     @GetMapping("/search")
     public List<BookDto> search(@RequestParam String q) {
-        return bookService.searchBooks(q);
+        return bookServiceImpl.searchBooks(q);
     }
 
 }
