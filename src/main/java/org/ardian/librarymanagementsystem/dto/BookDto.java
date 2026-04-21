@@ -1,25 +1,24 @@
 package org.ardian.librarymanagementsystem.dto;
 
 import lombok.Getter;
-import java.util.List;
 
 /**
  * Represents a book used in the application response layer.
  */
 
 @Getter
-public class Book {
+public class BookDto {
     private String title;
-    private List<String> authors;
+    private String author;
     private String firstPublishYear;
     private String coverUrl;
-    private String id;
+    private String externalId;
 
-    public Book(String title, List<String> authors, String firstPublishYear, String coverUrl, String id) {
+    public BookDto(String title, String author, String firstPublishYear, String coverUrl, String externalId) {
         this.title = title;
-        this.authors = authors;
+        this.author = author;
         this.firstPublishYear = firstPublishYear;
         this.coverUrl = coverUrl;
-        this.id = id;
+        this.externalId = externalId;
     }
 }

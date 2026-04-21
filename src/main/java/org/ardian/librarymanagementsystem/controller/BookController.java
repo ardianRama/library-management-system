@@ -1,6 +1,6 @@
 package org.ardian.librarymanagementsystem.controller;
 
-import org.ardian.librarymanagementsystem.dto.Book;
+import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ public class BookController {
     //http://localhost:8080/api/books/search?q=history
     //for admin to view books
     @GetMapping("/search")
-    public List<Book> search(@RequestParam String q) {
+    public List<BookDto> search(@RequestParam String q) {
         return bookService.searchBooks(q);
     }
 

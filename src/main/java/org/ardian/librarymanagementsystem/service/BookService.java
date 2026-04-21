@@ -2,7 +2,7 @@ package org.ardian.librarymanagementsystem.service;
 
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
-import org.ardian.librarymanagementsystem.dto.Book;
+import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.exception.InvalidSearchException;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,7 +22,7 @@ public class BookService {
     }
 
     @Cacheable(value = "books", key = "#query")
-    public List<Book> searchBooks(String query) {
+    public List<BookDto> searchBooks(String query) {
 
         if (query == null || query.isBlank()) {
             throw new InvalidSearchException("Search query cannot be empty");
@@ -34,12 +34,12 @@ public class BookService {
                 .toList();
     }
 
-    private Book mapToBook(BookDoc doc) {
+    private BookDto mapToBook(BookDoc doc) {
 
-        List<String> authors = getAuthors(doc);
+        String authors = getAuthors(doc);
         String coverUrl = getCoverUrl(doc.getCoverId());
 
-        return new Book(
+        return new BookDto(
                 doc.getTitle(),
                 authors,
                 doc.getFirstPublishYear(),
@@ -48,11 +48,11 @@ public class BookService {
         );
     }
 
-    private List<String> getAuthors(BookDoc doc) {
+    private String getAuthors(BookDoc doc) {
         if (doc.getAuthorName() == null || doc.getAuthorName().isEmpty()) {
-            return List.of("Unknown");
+            return "Unknown";
         }
-        return doc.getAuthorName();
+        return doc.getAuthorName().getFirst();
     }
 
     private String getCoverUrl(Integer coverId) {
