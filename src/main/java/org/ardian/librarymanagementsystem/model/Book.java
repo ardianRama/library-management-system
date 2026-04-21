@@ -25,15 +25,19 @@ public class Book {
     private String firstPublishYear;
     private String coverUrl;
     private String externalId;
+    private int totalCopies;
+    private int availableCopies;
 
     @OneToMany(mappedBy = "book")
     private List<Loan> loanHistory;
 
-    public Book(String title, String authors, String firstPublishYear, String coverUrl, String externalId) {
+    public Book(String title, String authors, String firstPublishYear, String coverUrl, String externalId, int totalCopies) {
         this.title = title;
         this.authors = authors;
         this.firstPublishYear = firstPublishYear;
         this.coverUrl = coverUrl;
         this.externalId = externalId;
+        this.totalCopies = totalCopies;
+        this.availableCopies = totalCopies;
     }
 }
