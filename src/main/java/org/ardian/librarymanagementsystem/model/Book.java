@@ -21,7 +21,7 @@ public class Book {
     private Long id;
 
     private String title;
-    private String authors;
+    private String author;
     private String firstPublishYear;
     private String coverUrl;
     private String externalId;
@@ -31,9 +31,9 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Loan> loanHistory;
 
-    public Book(String title, String authors, String firstPublishYear, String coverUrl, String externalId, int totalCopies) {
+    public Book(String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies) {
         this.title = title;
-        this.authors = authors;
+        this.author = author;
         this.firstPublishYear = firstPublishYear;
         this.coverUrl = coverUrl;
         this.externalId = externalId;
