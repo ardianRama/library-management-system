@@ -1,6 +1,7 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.BookDto;
+import org.ardian.librarymanagementsystem.dto.UpdateCopiesRequest;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,10 @@ public class BookController {
     @PatchMapping("/{externalId}/copies")
     public ResponseEntity<Book> updateCopies(
             @PathVariable String externalId,
-            @RequestParam int totalCopies
+            @RequestBody UpdateCopiesRequest request
     ) {
-        return ResponseEntity.ok(bookService.updateTotalCopies(externalId, totalCopies));
+        return ResponseEntity.ok(
+                bookService.updateTotalCopies(externalId, request.getTotalCopies())
+        );
     }
 }
