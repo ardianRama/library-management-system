@@ -3,6 +3,9 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDto;
+import org.ardian.librarymanagementsystem.exception.BookAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
+import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
 import org.ardian.librarymanagementsystem.exception.InvalidSearchException;
 import org.ardian.librarymanagementsystem.mapper.external.OpenLibraryMapper;
 import org.ardian.librarymanagementsystem.mapper.internal.BookMapper;
@@ -44,7 +47,32 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book addBook(BookDto dto, int totalCopies) {
 
+        if (bookRepository.existsByExternalId(dto.getExternalId())) {
+            throw new BookAlreadyExistsException("Book with this externalId already exists");
+        }
+
         Book book = BookMapper.bookDtoToBookEntity(dto, totalCopies);
+        return bookRepository.save(book);
+    }
+
+    @Override
+    public Book updateTotalCopies(String externalId, int totalCopies) {
+
+        Book book = bookRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new BookNotFoundException("Book with externalId " + externalId + " not found"));
+
+        int borrowed = book.getTotalCopies() - book.getAvailableCopies();
+
+        if (totalCopies < borrowed) {
+            throw new InvalidBookUpdateException(
+                    "Total copies cannot be less than borrowed copies (" + borrowed + ")"
+            );
+        }
+
+        int difference = totalCopies - book.getTotalCopies();
+
+        book.setTotalCopies(totalCopies);
+        book.setAvailableCopies(book.getAvailableCopies() + difference);
 
         return bookRepository.save(book);
     }

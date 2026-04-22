@@ -39,4 +39,13 @@ public class BookController {
         Book saved = bookService.addBook(dto, totalCopies);
         return ResponseEntity.ok(saved);
     }
+
+    //http://localhost:8080/api/books/OL82586W/copies?totalCopies=25
+    @PatchMapping("/{externalId}/copies")
+    public ResponseEntity<Book> updateCopies(
+            @PathVariable String externalId,
+            @RequestParam int totalCopies
+    ) {
+        return ResponseEntity.ok(bookService.updateTotalCopies(externalId, totalCopies));
+    }
 }

@@ -1,9 +1,6 @@
 package org.ardian.librarymanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +22,10 @@ public class Book {
     private String author;
     private String firstPublishYear;
     private String coverUrl;
+
+    @Column(unique = true)
     private String externalId;
+
     private int totalCopies;
     private int availableCopies;
 
