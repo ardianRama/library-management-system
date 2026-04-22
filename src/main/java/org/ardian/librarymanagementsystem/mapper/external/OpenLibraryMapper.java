@@ -14,13 +14,14 @@ public class OpenLibraryMapper {
 
         String authors = getAuthor(doc);
         String coverUrl = getCoverUrl(doc.getCoverId(), properties);
+        String externalId = normalizeExternalId(doc.getKey());
 
         return new BookDto(
                 doc.getTitle(),
                 authors,
                 doc.getFirstPublishYear(),
                 coverUrl,
-                doc.getKey()
+                externalId
         );
     }
 
@@ -37,5 +38,10 @@ public class OpenLibraryMapper {
         }
 
         return properties.getCoverBaseUrl() + coverId + "-M.jpg";
+    }
+
+    private static String normalizeExternalId(String key) {
+        if (key == null) return null;
+        return key.replace("/works/", "");
     }
 }
