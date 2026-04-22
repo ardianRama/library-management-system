@@ -25,8 +25,8 @@ public class BookController {
     //http://localhost:8080/api/books/search?q=history
     //for admin to view books
     @GetMapping("/search")
-    public List<BookDto> search(@RequestParam String q) {
-        return bookService.searchBooks(q);
+    public List<BookDto> searchBooks(@RequestParam String q) {
+        return bookService.searchBooksFromApi(q);
     }
 
     //http://localhost:8080/api/books/import?totalCopies=5

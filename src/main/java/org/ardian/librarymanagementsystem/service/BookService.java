@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface BookService {
 
-    List<BookDto> searchBooks(String query);
+    List<BookDto> searchBooksFromApi(String query);
 
     Book addBook(BookDto dto, int totalCopies);
 }

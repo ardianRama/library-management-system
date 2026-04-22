@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Cacheable(value = "books", key = "#query")
-    public List<BookDto> searchBooks(String query) {
+    public List<BookDto> searchBooksFromApi(String query) {
 
         if (query == null || query.isBlank()) {
             throw new InvalidSearchException("Search query cannot be empty");
