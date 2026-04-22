@@ -2,6 +2,7 @@ package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.UpdateCopiesRequest;
+import org.ardian.librarymanagementsystem.dto.ImportBookRequest;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -20,28 +21,25 @@ public class BookController {
     }
 
     //http://localhost:8080/api/books/search?q=harry+potter
-    //http://localhost:8080/api/books/search?q=Rowling
-    //http://localhost:8080/api/books/search?q=tolkien
-    //http://localhost:8080/api/books/search?q=lord+of+the+rings
-    //http://localhost:8080/api/books/search?q=history
-    //for admin to view books
+    //http://localhost:8080/api/books/search?q=rowling
+    //for admin
     @GetMapping("/search")
     public List<BookDto> searchBooks(@RequestParam String q) {
         return bookService.searchBooksFromApi(q);
     }
 
-    //http://localhost:8080/api/books/import?totalCopies=5
+    //http://localhost:8080/api/books/import
     //for admin
     @PostMapping("/import")
-    public ResponseEntity<Book> addBook(
-            @RequestBody BookDto dto,
-            @RequestParam int totalCopies
-    ) {
-        Book saved = bookService.addBook(dto, totalCopies);
+    public ResponseEntity<Book> addBook(@RequestBody ImportBookRequest request) {
+
+        Book saved = bookService.addBook(request.getBook(), request.getTotalCopies());
+
         return ResponseEntity.ok(saved);
     }
 
-    //http://localhost:8080/api/books/OL82586W/copies?totalCopies=25
+    //http://localhost:8080/api/books/OL82586W/copies
+    //for admin
     @PatchMapping("/{externalId}/copies")
     public ResponseEntity<Book> updateCopies(
             @PathVariable String externalId,

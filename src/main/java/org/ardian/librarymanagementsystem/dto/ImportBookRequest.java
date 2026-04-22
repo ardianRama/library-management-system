@@ -4,13 +4,14 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 
 /**
- * Represents a request to update the total number of copies
- * of a book in the library system.
+ * Represents a request used when importing a book into the library system.
  */
 
 @Getter
-public class UpdateCopiesRequest {
+public class ImportBookRequest {
 
-    @Min(value = 1)
+    private BookDto book;
+
+    @Min(1)
     private int totalCopies;
 }
