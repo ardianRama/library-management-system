@@ -1,7 +1,9 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.BookDto;
-import org.ardian.librarymanagementsystem.service.impl.BookServiceImpl;
+import org.ardian.librarymanagementsystem.model.Book;
+import org.ardian.librarymanagementsystem.service.BookService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,10 +12,10 @@ import java.util.List;
 @RequestMapping("/api/books")
 public class BookController {
 
-    private final BookServiceImpl bookServiceImpl;
+    private final BookService bookService;
 
-    public BookController(BookServiceImpl bookServiceImpl) {
-        this.bookServiceImpl = bookServiceImpl;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     //http://localhost:8080/api/books/search?q=harry+potter
@@ -24,7 +26,17 @@ public class BookController {
     //for admin to view books
     @GetMapping("/search")
     public List<BookDto> search(@RequestParam String q) {
-        return bookServiceImpl.searchBooks(q);
+        return bookService.searchBooks(q);
     }
 
+    //http://localhost:8080/api/books/import?totalCopies=5
+    //for admin
+    @PostMapping("/import")
+    public ResponseEntity<Book> addBook(
+            @RequestBody BookDto dto,
+            @RequestParam int totalCopies
+    ) {
+        Book saved = bookService.addBook(dto, totalCopies);
+        return ResponseEntity.ok(saved);
+    }
 }

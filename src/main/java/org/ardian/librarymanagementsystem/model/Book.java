@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Loan> loanHistory;
 
+    @Builder
     public Book(String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies) {
         this.title = title;
         this.author = author;
