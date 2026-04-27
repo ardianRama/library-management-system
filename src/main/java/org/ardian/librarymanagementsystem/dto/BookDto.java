@@ -3,7 +3,8 @@ package org.ardian.librarymanagementsystem.dto;
 import lombok.Getter;
 
 /**
- * Represents a book used in the application response layer.
+ * Represents a book returned to the client as part of API responses.
+ * Mapped from external API documents (BookDoc).
  */
 
 @Getter
