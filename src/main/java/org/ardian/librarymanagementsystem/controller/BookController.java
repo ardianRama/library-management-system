@@ -25,13 +25,13 @@ public class BookController {
     //http://localhost:8080/api/books/detailed
     @GetMapping("/detailed")
     public List<BookDetailedDto> getAllDetailedBooks() {
-        return bookService.getAllDetailedBooks();
+        return bookService.getAllDetailedBooksFromLibrary();
     }
 
     //http://localhost:8080/api/books/search/external?q=harry+potter
     //http://localhost:8080/api/books/search/external?q=rowling
     @GetMapping("/search/external")
-    public List<BookDto> searchBooks(@RequestParam String q) {
+    public List<BookDto> searchBooksExternal(@RequestParam String q) {
         return bookService.searchBooksFromApi(q);
     }
 
@@ -68,7 +68,7 @@ public class BookController {
     //http://localhost:8080/api/books/search?q=tolkien
     //http://localhost:8080/api/books/search?q=lord+of+the+rings
     @GetMapping("/search")
-    public List<LibraryBookDto> searchBooksInLibrary(@RequestParam String q) {
+    public List<LibraryBookDto> searchBooks(@RequestParam String q) {
         return bookService.searchBooksInLibrary(q);
     }
 }

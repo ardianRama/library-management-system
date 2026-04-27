@@ -88,7 +88,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDetailedDto> getAllDetailedBooks() {
+    public List<BookDetailedDto> getAllDetailedBooksFromLibrary() {
         return bookRepository.findAll()
                 .stream()
                 .map(BookMapper::bookEntityToBookDetailedDto)

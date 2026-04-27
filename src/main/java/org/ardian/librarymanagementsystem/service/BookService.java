@@ -19,5 +19,5 @@ public interface BookService {
 
     List<LibraryBookDto> searchBooksInLibrary(String query);
 
-    List<BookDetailedDto> getAllDetailedBooks();
+    List<BookDetailedDto> getAllDetailedBooksFromLibrary();
 }
