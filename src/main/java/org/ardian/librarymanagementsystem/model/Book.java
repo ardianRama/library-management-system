@@ -1,16 +1,14 @@
 package org.ardian.librarymanagementsystem.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
 @Entity
 public class Book {
 
@@ -32,8 +30,8 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Loan> loanHistory;
 
-    @Builder
-    public Book(String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies) {
+    public Book(Long id, String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies, int availableCopies, List<Loan> loanHistory) {
+        this.id = id;
         this.title = title;
         this.author = author;
         this.firstPublishYear = firstPublishYear;
@@ -41,5 +39,6 @@ public class Book {
         this.externalId = externalId;
         this.totalCopies = totalCopies;
         this.availableCopies = totalCopies;
+        this.loanHistory = loanHistory;
     }
 }

@@ -3,6 +3,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDto;
+import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
 import org.ardian.librarymanagementsystem.exception.BookAlreadyExistsException;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
@@ -29,6 +30,10 @@ public class BookServiceImpl implements BookService {
         this.properties = properties;
         this.bookRepository = bookRepository;
     }
+
+    /**
+     * Admin functions
+     */
 
     @Override
     @Cacheable(value = "books", key = "#query")
@@ -75,5 +80,31 @@ public class BookServiceImpl implements BookService {
         book.setAvailableCopies(book.getAvailableCopies() + difference);
 
         return bookRepository.save(book);
+    }
+
+    /**
+     * User functions
+     */
+
+    @Override
+    public List<LibraryBookDto> getAllBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(BookMapper::bookEntityToLibraryBookDto)
+                .toList();
+    }
+
+    @Override
+    public List<LibraryBookDto> searchBooksInLibrary(String query) {
+
+        if (query == null || query.isBlank()) {
+            throw new InvalidSearchException("Search query cannot be empty");
+        }
+
+        return bookRepository
+                .findByTitleOrAuthor(query, query)
+                .stream()
+                .map(BookMapper::bookEntityToLibraryBookDto)
+                .toList();
     }
 }

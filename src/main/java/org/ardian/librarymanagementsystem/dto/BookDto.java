@@ -1,6 +1,5 @@
 package org.ardian.librarymanagementsystem.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 /**
