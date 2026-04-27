@@ -102,7 +102,7 @@ public class BookServiceImpl implements BookService {
         }
 
         return bookRepository
-                .findByTitleOrAuthor(query, query)
+                .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(query, query)
                 .stream()
                 .map(BookMapper::bookEntityToLibraryBookDto)
                 .toList();
