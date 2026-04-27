@@ -1,4 +1,6 @@
 package org.ardian.librarymanagementsystem.service;
 
-public interface Loan {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface Loan extends JpaRepository<Loan, Long> {
 }
