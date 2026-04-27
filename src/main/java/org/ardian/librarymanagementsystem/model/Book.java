@@ -38,7 +38,7 @@ public class Book {
         this.coverUrl = coverUrl;
         this.externalId = externalId;
         this.totalCopies = totalCopies;
-        this.availableCopies = totalCopies;
+        this.availableCopies = availableCopies;
         this.loanHistory = loanHistory;
     }
 }

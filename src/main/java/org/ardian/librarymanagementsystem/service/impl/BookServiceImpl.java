@@ -58,6 +58,9 @@ public class BookServiceImpl implements BookService {
         }
 
         Book book = BookMapper.bookDtoToBookEntity(dto, totalCopies);
+
+        book.setAvailableCopies(totalCopies);
+
         return bookRepository.save(book);
     }
 
@@ -65,7 +68,9 @@ public class BookServiceImpl implements BookService {
     public Book updateTotalCopies(String externalId, int totalCopies) {
 
         Book book = bookRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new BookNotFoundException("Book with externalId " + externalId + " not found"));
+                .orElseThrow(() -> new BookNotFoundException(
+                        "Book with externalId " + externalId + " not found"
+                ));
 
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 
@@ -75,10 +80,9 @@ public class BookServiceImpl implements BookService {
             );
         }
 
-        int difference = totalCopies - book.getTotalCopies();
-
         book.setTotalCopies(totalCopies);
-        book.setAvailableCopies(book.getAvailableCopies() + difference);
+
+        book.setAvailableCopies(totalCopies - borrowed);
 
         return bookRepository.save(book);
     }
