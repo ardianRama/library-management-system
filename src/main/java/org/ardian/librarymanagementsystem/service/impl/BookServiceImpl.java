@@ -2,6 +2,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
+import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
 import org.ardian.librarymanagementsystem.exception.BookAlreadyExistsException;
@@ -80,6 +81,14 @@ public class BookServiceImpl implements BookService {
         book.setAvailableCopies(book.getAvailableCopies() + difference);
 
         return bookRepository.save(book);
+    }
+
+    @Override
+    public List<BookDetailedDto> getAllDetailedBooks() {
+        return bookRepository.findAll()
+                .stream()
+                .map(BookMapper::bookEntityToBookDetailedDto)
+                .toList();
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.service;
 
+import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
 import org.ardian.librarymanagementsystem.model.Book;
@@ -17,4 +18,6 @@ public interface BookService {
     List<LibraryBookDto> getAllBooks();
 
     List<LibraryBookDto> searchBooksInLibrary(String query);
+
+    List<BookDetailedDto> getAllDetailedBooks();
 }

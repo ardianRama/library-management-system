@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.mapper.internal;
 
+import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
 import org.ardian.librarymanagementsystem.model.Book;
@@ -22,12 +23,25 @@ public class BookMapper {
     }
 
     public static LibraryBookDto bookEntityToLibraryBookDto(Book book) {
-        return LibraryBookDto.builder().title(book.getTitle())
+        return LibraryBookDto.builder()
+                .title(book.getTitle())
                 .id(book.getId())
                 .author(book.getAuthor())
                 .firstPublishYear(book.getFirstPublishYear())
                 .coverUrl(book.getCoverUrl())
                 .availableCopies(book.getTotalCopies())
+                .build();
+    }
+
+    public static BookDetailedDto bookEntityToBookDetailedDto(Book book) {
+        return BookDetailedDto.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .firstPublishYear(book.getFirstPublishYear())
+                .coverUrl(book.getCoverUrl())
+                .totalCopies(book.getTotalCopies())
+                .availableCopies(book.getAvailableCopies())
                 .build();
     }
 }

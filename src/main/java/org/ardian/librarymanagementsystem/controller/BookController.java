@@ -1,9 +1,6 @@
 package org.ardian.librarymanagementsystem.controller;
 
-import org.ardian.librarymanagementsystem.dto.BookDto;
-import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
-import org.ardian.librarymanagementsystem.dto.UpdateCopiesRequest;
-import org.ardian.librarymanagementsystem.dto.ImportBookRequest;
+import org.ardian.librarymanagementsystem.dto.*;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +21,12 @@ public class BookController {
     /**
      * for admin
      */
+
+    //http://localhost:8080/api/books/detailed
+    @GetMapping("/detailed")
+    public List<BookDetailedDto> getAllDetailedBooks() {
+        return bookService.getAllDetailedBooks();
+    }
 
     //http://localhost:8080/api/books/search/external?q=harry+potter
     //http://localhost:8080/api/books/search/external?q=rowling
