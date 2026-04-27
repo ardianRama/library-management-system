@@ -40,6 +40,7 @@ public class BookMapper {
                 .author(book.getAuthor())
                 .firstPublishYear(book.getFirstPublishYear())
                 .coverUrl(book.getCoverUrl())
+                .externalId(book.getExternalId())
                 .totalCopies(book.getTotalCopies())
                 .availableCopies(book.getAvailableCopies())
                 .build();

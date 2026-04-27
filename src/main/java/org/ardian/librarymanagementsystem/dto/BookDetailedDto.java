@@ -18,6 +18,7 @@ public class BookDetailedDto {
     private String author;
     private String firstPublishYear;
     private String coverUrl;
+    private String externalId;
 
     private int totalCopies;
     private int availableCopies;
