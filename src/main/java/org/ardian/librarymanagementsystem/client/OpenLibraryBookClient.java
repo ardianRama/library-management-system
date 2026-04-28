@@ -49,10 +49,11 @@ public class OpenLibraryBookClient implements BookClient {
 
         } catch (Exception e) {
 
-            log.error("Failed to fetch books from OpenLibrary. query={}", query, e);
+            log.error("OpenLibrary API call failed. query={}", query, e);
 
             throw new OpenLibraryException(
-                    "Failed to fetch books from OpenLibrary",
+                    query,
+                    "External book service unavailable",
                     e
             );
         }

@@ -21,7 +21,7 @@ public class CustomizedExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 LocalDateTime.now(),
                 ex.getMessage(),
-                "Error calling external API"
+                "External API error for query: " + ex.getQuery()
         );
 
         return new ResponseEntity<>(error, HttpStatus.SERVICE_UNAVAILABLE);
