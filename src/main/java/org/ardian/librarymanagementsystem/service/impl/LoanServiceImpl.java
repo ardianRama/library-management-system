@@ -29,13 +29,13 @@ public class LoanServiceImpl implements LoanService {
 
     @Transactional
     @Override
-    public Loan borrowBook(Long userId, String externalId) {
+    public Loan borrowBook(Long userId, Long bookId) {
 
         //TODO add user not found exception
         LibraryUser user = libraryUserRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Book book = bookRepository.findByExternalId(externalId)
+        Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found"));
 
         if (book.getAvailableCopies() <= 0) {
@@ -50,7 +50,6 @@ public class LoanServiceImpl implements LoanService {
         loan.setBorrowedAt(LocalDateTime.now());
 
         loanRepository.save(loan);
-        bookRepository.save(book);
 
         return loan;
     }
