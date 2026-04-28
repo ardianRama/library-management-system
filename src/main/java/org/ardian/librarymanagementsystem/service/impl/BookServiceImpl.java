@@ -66,10 +66,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDetailedDto updateTotalCopies(String externalId, int totalCopies) {
+    public BookDetailedDto updateTotalCopies(Long bookId, int totalCopies) {
 
-        Book book = bookRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new BookNotFoundException(externalId));
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 

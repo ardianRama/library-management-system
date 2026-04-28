@@ -14,7 +14,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByExternalId(String externalId);
 
-    Optional<Book> findByExternalId(String externalId);
-
     List<Book> findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(String title, String author);
 }

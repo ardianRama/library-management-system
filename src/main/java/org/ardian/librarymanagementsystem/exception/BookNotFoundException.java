@@ -13,10 +13,4 @@ public class BookNotFoundException extends RuntimeException {
         this.bookId = bookId;
         this.externalBookId = null;
     }
-
-    public BookNotFoundException(String externalBookId) {
-        super("Book with external id " + externalBookId + " does not exist");
-        this.bookId = null;
-        this.externalBookId = externalBookId;
-    }
 }

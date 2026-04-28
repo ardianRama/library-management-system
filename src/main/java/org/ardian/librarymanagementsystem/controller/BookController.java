@@ -44,14 +44,14 @@ public class BookController {
         return ResponseEntity.ok(saved);
     }
 
-    //http://localhost:8080/api/books/OL82586W/copies
-    @PatchMapping("/{externalId}/copies")
+    //http://localhost:8080/api/books/452/copies
+    @PatchMapping("/{bookId}/copies")
     public ResponseEntity<BookDetailedDto> updateCopies(
-            @PathVariable String externalId,
+            @PathVariable Long bookId,
             @RequestBody UpdateCopiesRequest request
     ) {
         return ResponseEntity.ok(
-                bookService.updateTotalCopies(externalId, request.getTotalCopies())
+                bookService.updateTotalCopies(bookId, request.getTotalCopies())
         );
     }
 
