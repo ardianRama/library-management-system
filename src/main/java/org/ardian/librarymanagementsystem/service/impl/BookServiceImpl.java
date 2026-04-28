@@ -66,7 +66,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book updateTotalCopies(String externalId, int totalCopies) {
+    public BookDetailedDto updateTotalCopies(String externalId, int totalCopies) {
 
         Book book = bookRepository.findByExternalId(externalId)
                 .orElseThrow(() -> new BookNotFoundException(externalId));
@@ -80,7 +80,9 @@ public class BookServiceImpl implements BookService {
         book.setTotalCopies(totalCopies);
         book.setAvailableCopies(totalCopies - borrowed);
 
-        return bookRepository.save(book);
+        Book saved = bookRepository.save(book);
+
+        return BookMapper.bookEntityToBookDetailedDto(saved);
     }
 
     @Override

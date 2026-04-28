@@ -46,7 +46,7 @@ public class BookController {
 
     //http://localhost:8080/api/books/OL82586W/copies
     @PatchMapping("/{externalId}/copies")
-    public ResponseEntity<Book> updateCopies(
+    public ResponseEntity<BookDetailedDto> updateCopies(
             @PathVariable String externalId,
             @RequestBody UpdateCopiesRequest request
     ) {

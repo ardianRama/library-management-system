@@ -13,7 +13,7 @@ public interface BookService {
 
     BookDetailedDto addBook(BookDto dto, int totalCopies);
 
-    Book updateTotalCopies(String externalId, int totalCopies);
+    BookDetailedDto updateTotalCopies(String externalId, int totalCopies);
 
     List<LibraryBookDto> getAllBooks();
 
