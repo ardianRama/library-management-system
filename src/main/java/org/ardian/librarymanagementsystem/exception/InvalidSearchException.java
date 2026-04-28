@@ -6,7 +6,8 @@ package org.ardian.librarymanagementsystem.exception;
  */
 
 public class InvalidSearchException extends RuntimeException {
-    public InvalidSearchException(String message) {
-        super(message);
+
+    public InvalidSearchException() {
+        super("Search query cannot be empty");
     }
 }

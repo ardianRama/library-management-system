@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDto> searchBooksFromApi(String query) {
 
         if (query == null || query.isBlank()) {
-            throw new InvalidSearchException("Search query cannot be empty");
+            throw new InvalidSearchException();
         }
 
         return bookClient.fetchBooks(query)
@@ -106,7 +106,7 @@ public class BookServiceImpl implements BookService {
     public List<LibraryBookDto> searchBooksInLibrary(String query) {
 
         if (query == null || query.isBlank()) {
-            throw new InvalidSearchException("Search query cannot be empty");
+            throw new InvalidSearchException();
         }
 
         return bookRepository
