@@ -1,6 +1,6 @@
 package org.ardian.librarymanagementsystem.controller;
 
-import org.ardian.librarymanagementsystem.model.Loan;
+import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.service.LoanService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ public class LoanController {
     }
 
     @PostMapping("/borrow")
-    public ResponseEntity<Loan> borrowBook(
+    public ResponseEntity<LoanDto> borrowBook(
             @RequestParam Long userId,
             @RequestParam Long bookId
     ) {

@@ -1,7 +1,9 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
+import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
+import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.model.Loan;
@@ -29,7 +31,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Transactional
     @Override
-    public Loan borrowBook(Long userId, Long bookId) {
+    public LoanDto borrowBook(Long userId, Long bookId) {
 
         //TODO add user not found exception
         LibraryUser user = libraryUserRepository.findById(userId)
@@ -51,6 +53,6 @@ public class LoanServiceImpl implements LoanService {
 
         loanRepository.save(loan);
 
-        return loan;
+        return LoanMapper.loanEntityToLoanDto(loan);
     }
 }
