@@ -1,12 +1,10 @@
 package org.ardian.librarymanagementsystem.controller;
 
+import org.ardian.librarymanagementsystem.dto.BorrowBookRequest;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.service.LoanService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -19,10 +17,9 @@ public class LoanController {
     }
 
     @PostMapping("/borrow")
-    public ResponseEntity<LoanDto> borrowBook(
-            @RequestParam Long userId,
-            @RequestParam Long bookId
-    ) {
-        return ResponseEntity.ok(loanService.borrowBook(userId, bookId));
+    public ResponseEntity<LoanDto> borrowBook(@RequestBody BorrowBookRequest request) {
+        return ResponseEntity.ok(
+                loanService.borrowBook(request.getUserId(), request.getBookId())
+        );
     }
 }
