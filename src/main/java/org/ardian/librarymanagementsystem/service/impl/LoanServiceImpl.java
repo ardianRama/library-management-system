@@ -3,6 +3,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
+import org.ardian.librarymanagementsystem.exception.LibraryUserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
@@ -33,12 +34,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public LoanDto borrowBook(Long userId, Long bookId) {
 
-        //TODO add user not found exception
         LibraryUser user = libraryUserRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new LibraryUserNotFoundException("Library user with id " + userId + " does not exist"));
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException("Book with id " + bookId + " does not exist"));
 
         if (book.getAvailableCopies() <= 0) {
             throw new InvalidBookUpdateException("No available copies");
