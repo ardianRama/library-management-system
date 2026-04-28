@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.BookNotAvailableException;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 public class LoanServiceImpl implements LoanService {
 
@@ -42,6 +44,13 @@ public class LoanServiceImpl implements LoanService {
                 .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (book.getAvailableCopies() <= 0) {
+
+            log.warn(
+                    "Attempt to borrow unavailable book. userId={}, bookId={}",
+                    userId,
+                    bookId
+            );
+
             throw new BookNotAvailableException(bookId);
         }
 
@@ -52,8 +61,15 @@ public class LoanServiceImpl implements LoanService {
         loan.setBook(book);
         loan.setBorrowedAt(LocalDateTime.now());
 
-        loanRepository.save(loan);
+        Loan savedLoan = loanRepository.save(loan);
 
-        return LoanMapper.loanEntityToLoanDto(loan);
+        log.info(
+                "Book borrowed successfully. loanId={}, userId={}, bookId={}",
+                savedLoan.getId(),
+                userId,
+                bookId
+        );
+
+        return LoanMapper.loanEntityToLoanDto(savedLoan);
     }
 }

@@ -16,6 +16,7 @@ public class LoanController {
         this.loanService = loanService;
     }
 
+    //http://localhost:8080/api/loans/borrow
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(@RequestBody BorrowBookRequest request) {
         return ResponseEntity.ok(

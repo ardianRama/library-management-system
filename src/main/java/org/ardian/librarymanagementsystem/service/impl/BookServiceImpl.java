@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -44,16 +46,27 @@ public class BookServiceImpl implements BookService {
             throw new InvalidSearchException();
         }
 
-        return bookClient.fetchBooks(query)
+        log.info("Searching OpenLibrary API. query={}", query);
+
+        List<BookDto> books = bookClient.fetchBooks(query)
                 .stream()
                 .map(doc -> OpenLibraryMapper.bookDocToBookDto(doc, properties))
                 .toList();
+
+        log.info("OpenLibrary search completed. query={}, results={}",
+                query, books.size());
+
+        return books;
     }
 
     @Override
     public BookDetailedDto addBook(BookDto dto, int totalCopies) {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
+
+            log.warn("Attempt to add duplicate book. externalId={}",
+                    dto.getExternalId());
+
             throw new BookAlreadyExistsException(dto.getExternalId());
         }
 
@@ -61,6 +74,11 @@ public class BookServiceImpl implements BookService {
         book.setAvailableCopies(totalCopies);
 
         Book saved = bookRepository.save(book);
+
+        log.info("Book added successfully. bookId={}, externalId={}, totalCopies={}",
+                saved.getId(),
+                saved.getExternalId(),
+                saved.getTotalCopies());
 
         return BookMapper.bookEntityToBookDetailedDto(saved);
     }
@@ -74,13 +92,30 @@ public class BookServiceImpl implements BookService {
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 
         if (totalCopies < borrowed) {
+
+            log.warn(
+                    "Invalid totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
+                    bookId,
+                    totalCopies,
+                    borrowed
+            );
+
             throw new InvalidBookUpdateException(borrowed, totalCopies);
         }
+
+        int oldTotalCopies = book.getTotalCopies();
 
         book.setTotalCopies(totalCopies);
         book.setAvailableCopies(totalCopies - borrowed);
 
         Book saved = bookRepository.save(book);
+
+        log.info(
+                "Book totalCopies updated. bookId={}, oldTotalCopies={}, newTotalCopies={}",
+                saved.getId(),
+                oldTotalCopies,
+                saved.getTotalCopies()
+        );
 
         return BookMapper.bookEntityToBookDetailedDto(saved);
     }
