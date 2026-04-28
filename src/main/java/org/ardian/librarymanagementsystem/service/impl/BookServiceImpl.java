@@ -54,7 +54,7 @@ public class BookServiceImpl implements BookService {
     public Book addBook(BookDto dto, int totalCopies) {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
-            throw new BookAlreadyExistsException("Book with this externalId " + dto.getExternalId() + " already exists");
+            throw new BookAlreadyExistsException(dto.getExternalId());
         }
 
         Book book = BookMapper.bookDtoToBookEntity(dto, totalCopies);
