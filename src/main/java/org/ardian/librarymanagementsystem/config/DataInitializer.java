@@ -5,6 +5,10 @@ import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * Initializes default users in the database at application startup.
+ */
+
 @Component
 public class DataInitializer implements CommandLineRunner {
 
