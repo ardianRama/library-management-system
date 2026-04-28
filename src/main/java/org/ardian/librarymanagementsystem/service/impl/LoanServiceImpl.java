@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.BookNotAvailableException;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
-import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
 import org.ardian.librarymanagementsystem.exception.LibraryUserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;

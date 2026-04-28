@@ -3,7 +3,6 @@ package org.ardian.librarymanagementsystem.service;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
-import org.ardian.librarymanagementsystem.model.Book;
 
 import java.util.List;
 

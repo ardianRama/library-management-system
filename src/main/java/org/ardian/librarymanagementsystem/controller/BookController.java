@@ -1,7 +1,6 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.*;
-import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
