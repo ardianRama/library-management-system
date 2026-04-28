@@ -6,6 +6,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Represents a loan response returned to clients.
+ */
+
 @Getter
 @Setter
 @Builder
