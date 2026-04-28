@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 
 public interface LibraryUserRepository extends JpaRepository<LibraryUser, Long> {
+
+    boolean existsByUsername(String username);
 }
