@@ -1,6 +1,7 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
 import org.ardian.librarymanagementsystem.dto.LoanDto;
+import org.ardian.librarymanagementsystem.exception.BookNotAvailableException;
 import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
 import org.ardian.librarymanagementsystem.exception.LibraryUserNotFoundException;
@@ -41,7 +42,7 @@ public class LoanServiceImpl implements LoanService {
                 .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (book.getAvailableCopies() <= 0) {
-            throw new InvalidBookUpdateException("No available copies");
+            throw new BookNotAvailableException(bookId);
         }
 
         book.setAvailableCopies(book.getAvailableCopies() - 1);

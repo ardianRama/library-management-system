@@ -73,13 +73,10 @@ public class BookServiceImpl implements BookService {
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 
         if (totalCopies < borrowed) {
-            throw new InvalidBookUpdateException(
-                    "Total copies cannot be less than borrowed copies (" + borrowed + ")"
-            );
+            throw new InvalidBookUpdateException(borrowed, totalCopies);
         }
 
         book.setTotalCopies(totalCopies);
-
         book.setAvailableCopies(totalCopies - borrowed);
 
         return bookRepository.save(book);

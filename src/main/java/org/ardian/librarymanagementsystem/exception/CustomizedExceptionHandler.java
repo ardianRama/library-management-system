@@ -75,6 +75,18 @@ public class CustomizedExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BookNotAvailableException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotAvailableException(BookNotAvailableException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "Book not available"
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(LibraryUserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleLibraryUserNotFound(LibraryUserNotFoundException ex) {
 
