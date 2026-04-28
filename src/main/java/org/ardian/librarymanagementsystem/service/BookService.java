@@ -11,7 +11,7 @@ public interface BookService {
 
     List<BookDto> searchBooksFromApi(String query);
 
-    Book addBook(BookDto dto, int totalCopies);
+    BookDetailedDto addBook(BookDto dto, int totalCopies);
 
     Book updateTotalCopies(String externalId, int totalCopies);
 

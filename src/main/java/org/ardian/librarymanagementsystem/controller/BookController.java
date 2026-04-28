@@ -37,9 +37,9 @@ public class BookController {
 
     //http://localhost:8080/api/books/import
     @PostMapping("/import")
-    public ResponseEntity<Book> addBook(@RequestBody ImportBookRequest request) {
+    public ResponseEntity<BookDetailedDto> addBook(@RequestBody ImportBookRequest request) {
 
-        Book saved = bookService.addBook(request.getBook(), request.getTotalCopies());
+        BookDetailedDto saved = bookService.addBook(request.getBook(), request.getTotalCopies());
 
         return ResponseEntity.ok(saved);
     }

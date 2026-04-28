@@ -51,17 +51,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book addBook(BookDto dto, int totalCopies) {
+    public BookDetailedDto addBook(BookDto dto, int totalCopies) {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
             throw new BookAlreadyExistsException(dto.getExternalId());
         }
 
         Book book = BookMapper.bookDtoToBookEntity(dto, totalCopies);
-
         book.setAvailableCopies(totalCopies);
 
-        return bookRepository.save(book);
+        Book saved = bookRepository.save(book);
+
+        return BookMapper.bookEntityToBookDetailedDto(saved);
     }
 
     @Override
