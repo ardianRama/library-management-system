@@ -68,9 +68,7 @@ public class BookServiceImpl implements BookService {
     public Book updateTotalCopies(String externalId, int totalCopies) {
 
         Book book = bookRepository.findByExternalId(externalId)
-                .orElseThrow(() -> new BookNotFoundException(
-                        "Book with externalId " + externalId + " not found"
-                ));
+                .orElseThrow(() -> new BookNotFoundException(externalId));
 
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 

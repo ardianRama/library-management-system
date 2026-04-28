@@ -35,10 +35,10 @@ public class LoanServiceImpl implements LoanService {
     public LoanDto borrowBook(Long userId, Long bookId) {
 
         LibraryUser user = libraryUserRepository.findById(userId)
-                .orElseThrow(() -> new LibraryUserNotFoundException("Library user with id " + userId + " does not exist"));
+                .orElseThrow(() -> new LibraryUserNotFoundException(userId));
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book with id " + bookId + " does not exist"));
+                .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (book.getAvailableCopies() <= 0) {
             throw new InvalidBookUpdateException("No available copies");
