@@ -1,13 +1,17 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
+import org.ardian.librarymanagementsystem.exception.business.ConflictException.UserAlreadyExistsException;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
+import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.Role;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class LibraryUserServiceImpl implements LibraryUserService {
 
@@ -25,20 +29,21 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     @Override
     public void registerUser(LibraryUserDto dto) {
 
-        //TODO add new exception
         if (repository.existsByEmail(dto.getEmail())) {
-            throw new RuntimeException("Email already exists");
+
+            log.warn("Attempt to register user with existing email: {}", dto.getEmail());
+
+            throw new UserAlreadyExistsException(dto.getEmail());
         }
 
-        //TODO create mapper?
-        LibraryUser user = LibraryUser.builder()
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .role(Role.USER)
-                .build();
+        LibraryUser user = LibraryUserMapper.libraryUserDtoToLibraryUserEntity(dto, Role.USER);
 
-        repository.save(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        LibraryUser saved = repository.save(user);
+
+        log.info("User registered successfully. userId={}, email={}",
+                saved.getId(),
+                saved.getEmail());
     }
 }
