@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.controller;
 
+import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.*;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class BookController {
     @PatchMapping("/{bookId}/copies")
     public ResponseEntity<BookDetailedDto> updateCopies(
             @PathVariable Long bookId,
-            @RequestBody UpdateCopiesRequest request
+            @Valid @RequestBody UpdateCopiesRequest request
     ) {
         return ResponseEntity.ok(
                 bookService.updateTotalCopies(bookId, request.getTotalCopies())

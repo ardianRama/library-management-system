@@ -11,6 +11,6 @@ import lombok.Getter;
 @Getter
 public class UpdateCopiesRequest {
 
-    @Min(value = 1)
+    @Min(value = 1, message = "Total copies must be at least 1")
     private int totalCopies;
 }
