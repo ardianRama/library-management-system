@@ -15,21 +15,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class LibraryUserServiceImpl implements LibraryUserService {
 
-    private final LibraryUserRepository repository;
+    private final LibraryUserRepository libraryUserRepository;
     private final PasswordEncoder passwordEncoder;
 
     public LibraryUserServiceImpl(
-            LibraryUserRepository repository,
+            LibraryUserRepository libraryUserRepository,
             PasswordEncoder passwordEncoder
     ) {
-        this.repository = repository;
+        this.libraryUserRepository = libraryUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void registerUser(LibraryUserDto dto) {
 
-        if (repository.existsByEmail(dto.getEmail())) {
+        if (libraryUserRepository.existsByEmail(dto.getEmail())) {
 
             log.warn("Attempt to register user with existing email: {}", dto.getEmail());
 
@@ -40,7 +40,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        LibraryUser saved = repository.save(user);
+        LibraryUser saved = libraryUserRepository.save(user);
 
         log.info("User registered successfully. userId={}, email={}",
                 saved.getId(),
