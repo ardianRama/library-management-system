@@ -1,4 +1,4 @@
-package org.ardian.librarymanagementsystem.exception.business.notFoundException;
+package org.ardian.librarymanagementsystem.exception.business.notfound;
 
 import lombok.Getter;
 

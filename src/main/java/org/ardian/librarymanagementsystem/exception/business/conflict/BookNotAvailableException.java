@@ -1,4 +1,4 @@
-package org.ardian.librarymanagementsystem.exception.business.conflictException;
+package org.ardian.librarymanagementsystem.exception.business.conflict;
 
 import lombok.Getter;
 

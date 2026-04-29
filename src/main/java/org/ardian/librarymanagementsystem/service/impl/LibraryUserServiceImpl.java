@@ -2,7 +2,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
-import org.ardian.librarymanagementsystem.exception.business.ConflictException.UserAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.Role;

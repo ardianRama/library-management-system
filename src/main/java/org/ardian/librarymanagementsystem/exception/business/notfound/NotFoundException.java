@@ -1,4 +1,4 @@
-package org.ardian.librarymanagementsystem.exception.business.notFoundException;
+package org.ardian.librarymanagementsystem.exception.business.notfound;
 
 public abstract class NotFoundException extends RuntimeException {
 

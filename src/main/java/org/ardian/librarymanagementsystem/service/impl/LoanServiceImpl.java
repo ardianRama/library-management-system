@@ -2,9 +2,9 @@ package org.ardian.librarymanagementsystem.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
-import org.ardian.librarymanagementsystem.exception.business.ConflictException.BookNotAvailableException;
-import org.ardian.librarymanagementsystem.exception.business.NotFoundException.BookNotFoundException;
-import org.ardian.librarymanagementsystem.exception.business.NotFoundException.LibraryUserNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.BookNotAvailableException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;

@@ -1,7 +1,7 @@
 package org.ardian.librarymanagementsystem.exception.handler;
 
-import org.ardian.librarymanagementsystem.exception.business.ConflictException.ConflictException;
-import org.ardian.librarymanagementsystem.exception.business.NotFoundException.NotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.ConflictException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.NotFoundException;
 import org.ardian.librarymanagementsystem.exception.integration.IntegrationException;
 import org.ardian.librarymanagementsystem.exception.validation.ValidationException;
 import org.springframework.http.HttpStatus;
