@@ -3,40 +3,50 @@ package org.ardian.librarymanagementsystem.config;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * Initializes default users in the database at application startup.
+ * Initializes development users in the database at application startup.
+ * Used only for local development/testing.
  */
 
 @Component
 public class DataInitializer implements CommandLineRunner {
 
     private final LibraryUserRepository libraryUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(LibraryUserRepository libraryUserRepository) {
+    private static final String JOHN_EMAIL = "john.doe@gmail.com";
+    private static final String ADMIN_EMAIL = "admin@gmail.com";
+
+    private static final String JOHN_PASSWORD = "test1";
+    private static final String ADMIN_PASSWORD = "admin";
+
+    public DataInitializer(LibraryUserRepository libraryUserRepository, PasswordEncoder passwordEncoder) {
         this.libraryUserRepository = libraryUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void run(String... args) {
 
-        if (!libraryUserRepository.existsByEmail("john.doe@gmail.com")) {
+        if (!libraryUserRepository.existsByEmail(JOHN_EMAIL)) {
             libraryUserRepository.save(
                     LibraryUser.builder()
-                            .email("john.doe@gmail.com")
-                            .password("test1")
+                            .email(JOHN_EMAIL)
+                            .password(passwordEncoder.encode(JOHN_PASSWORD))
                             .firstName("John")
                             .lastName("Doe")
                             .build()
             );
         }
 
-        if (!libraryUserRepository.existsByEmail("admin@gmail.com")) {
+        if (!libraryUserRepository.existsByEmail(ADMIN_EMAIL)) {
             libraryUserRepository.save(
                     LibraryUser.builder()
-                            .email("admin@gmail.com")
-                            .password("admin")
+                            .email(ADMIN_EMAIL)
+                            .password(passwordEncoder.encode(ADMIN_PASSWORD))
                             .firstName("Admin")
                             .lastName("Admin")
                             .build()
