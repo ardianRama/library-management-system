@@ -1,9 +1,9 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.business.NotFoundException;
 
 import lombok.Getter;
 
 @Getter
-public class LibraryUserNotFoundException extends RuntimeException {
+public class LibraryUserNotFoundException extends NotFoundException {
 
     private final Long userId;
 

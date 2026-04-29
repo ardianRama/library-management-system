@@ -1,9 +1,9 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.business.ConflictException;
 
 import lombok.Getter;
 
 @Getter
-public class BookAlreadyExistsException extends RuntimeException {
+public class BookAlreadyExistsException extends ConflictException {
 
     private final String externalId;
 

@@ -1,9 +1,9 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.business.ConflictException;
 
 import lombok.Getter;
 
 @Getter
-public class BookNotAvailableException extends RuntimeException {
+public class BookNotAvailableException extends ConflictException {
 
     private final Long bookId;
 

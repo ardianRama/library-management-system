@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.dto.SearchResponse;
-import org.ardian.librarymanagementsystem.exception.OpenLibraryException;
+import org.ardian.librarymanagementsystem.exception.integration.OpenLibraryException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 

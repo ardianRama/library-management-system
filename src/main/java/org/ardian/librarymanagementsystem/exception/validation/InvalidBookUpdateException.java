@@ -1,9 +1,9 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.validation;
 
 import lombok.Getter;
 
 @Getter
-public class InvalidBookUpdateException extends RuntimeException {
+public class InvalidBookUpdateException extends ValidationException {
 
     private final int borrowed;
     private final int totalCopies;

@@ -1,9 +1,9 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.business.ConflictException;
 
 import lombok.Getter;
 
 @Getter
-public class BookDeletionException extends RuntimeException {
+public class BookDeletionException extends ConflictException {
 
     private final Long bookId;
 

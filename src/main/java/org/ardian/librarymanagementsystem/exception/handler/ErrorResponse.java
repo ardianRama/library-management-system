@@ -1,4 +1,4 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.handler;
 
 import lombok.Getter;
 

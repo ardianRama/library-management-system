@@ -1,4 +1,4 @@
-package org.ardian.librarymanagementsystem.exception;
+package org.ardian.librarymanagementsystem.exception.integration;
 
 import lombok.Getter;
 
@@ -8,7 +8,7 @@ import lombok.Getter;
  */
 
 @Getter
-public class OpenLibraryException extends RuntimeException {
+public class OpenLibraryException extends IntegrationException  {
 
     private final String query;
 
