@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Builder
 @Entity
 public class Book {
 
@@ -30,8 +29,8 @@ public class Book {
     @OneToMany(mappedBy = "book")
     private List<Loan> loanHistory;
 
-    public Book(Long id, String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies, int availableCopies, List<Loan> loanHistory) {
-        this.id = id;
+    @Builder
+    public Book(String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies, int availableCopies) {
         this.title = title;
         this.author = author;
         this.firstPublishYear = firstPublishYear;
@@ -39,6 +38,5 @@ public class Book {
         this.externalId = externalId;
         this.totalCopies = totalCopies;
         this.availableCopies = availableCopies;
-        this.loanHistory = loanHistory;
     }
 }
