@@ -3,6 +3,7 @@ package org.ardian.librarymanagementsystem.controller;
 import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,10 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(
-            @Valid @RequestBody LibraryUserDto dto
-    ) {
+    public ResponseEntity<Void> register(@Valid @RequestBody LibraryUserDto dto) {
 
         libraryUserService.registerUser(dto);
 
-        return ResponseEntity.ok("User registered");
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
