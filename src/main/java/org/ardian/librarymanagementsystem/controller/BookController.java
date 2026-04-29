@@ -54,6 +54,15 @@ public class BookController {
         );
     }
 
+    //http://localhost:8080/api/books/452
+    @DeleteMapping("/{bookId}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
+
+        bookService.deleteBook(bookId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     /**
      * for user
      */

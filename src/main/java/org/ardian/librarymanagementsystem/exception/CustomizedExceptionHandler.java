@@ -87,6 +87,18 @@ public class CustomizedExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BookDeletionException.class)
+    public ResponseEntity<ErrorResponse> handleBookDeletion(BookDeletionException ex) {
+
+        ErrorResponse error = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getMessage(),
+                "Book deletion failed"
+        );
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(LibraryUserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleLibraryUserNotFound(LibraryUserNotFoundException ex) {
 

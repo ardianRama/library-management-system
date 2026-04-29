@@ -6,10 +6,7 @@ import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
-import org.ardian.librarymanagementsystem.exception.BookAlreadyExistsException;
-import org.ardian.librarymanagementsystem.exception.BookNotFoundException;
-import org.ardian.librarymanagementsystem.exception.InvalidBookUpdateException;
-import org.ardian.librarymanagementsystem.exception.InvalidSearchException;
+import org.ardian.librarymanagementsystem.exception.*;
 import org.ardian.librarymanagementsystem.mapper.external.OpenLibraryMapper;
 import org.ardian.librarymanagementsystem.mapper.internal.BookMapper;
 import org.ardian.librarymanagementsystem.model.Book;
@@ -118,6 +115,33 @@ public class BookServiceImpl implements BookService {
         );
 
         return BookMapper.bookEntityToBookDetailedDto(saved);
+    }
+
+    @Override
+    public void deleteBook(Long bookId) {
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
+
+        if (book.getAvailableCopies() < book.getTotalCopies()) {
+
+            log.warn(
+                    "Attempt to delete book with active loans. bookId={}, totalCopies={}, availableCopies={}",
+                    bookId,
+                    book.getTotalCopies(),
+                    book.getAvailableCopies()
+            );
+
+            throw new BookDeletionException(bookId);
+        }
+
+        bookRepository.delete(book);
+
+        log.info(
+                "Book deleted successfully. bookId={}, title={}",
+                book.getId(),
+                book.getTitle()
+        );
     }
 
     @Override
