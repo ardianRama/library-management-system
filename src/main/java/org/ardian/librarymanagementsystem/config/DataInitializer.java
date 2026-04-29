@@ -21,12 +21,26 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        if (!libraryUserRepository.existsByUsername("user1")) {
-            libraryUserRepository.save(new LibraryUser("user1", "test"));
+        if (!libraryUserRepository.existsByEmail("john.doe@gmail.com")) {
+            libraryUserRepository.save(
+                    LibraryUser.builder()
+                            .email("john.doe@gmail.com")
+                            .password("test1")
+                            .firstName("John")
+                            .lastName("Doe")
+                            .build()
+            );
         }
 
-        if (!libraryUserRepository.existsByUsername("admin")) {
-            libraryUserRepository.save(new LibraryUser("admin", "admin"));
+        if (!libraryUserRepository.existsByEmail("admin@gmail.com")) {
+            libraryUserRepository.save(
+                    LibraryUser.builder()
+                            .email("admin@gmail.com")
+                            .password("admin")
+                            .firstName("Admin")
+                            .lastName("Admin")
+                            .build()
+            );
         }
     }
 }

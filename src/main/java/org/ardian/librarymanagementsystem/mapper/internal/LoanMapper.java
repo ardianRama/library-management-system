@@ -17,7 +17,7 @@ public class LoanMapper {
                 .bookId(loan.getBook().getId())
                 .bookTitle(loan.getBook().getTitle())
                 .libraryUserId(loan.getLibraryUser().getId())
-                .username(loan.getLibraryUser().getUsername())
+                .email(loan.getLibraryUser().getEmail())
                 .build();
     }
 }

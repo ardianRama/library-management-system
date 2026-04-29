@@ -23,5 +23,5 @@ public class LoanDto {
     private String bookTitle;
 
     private Long libraryUserId;
-    private String username;
+    private String email;
 }

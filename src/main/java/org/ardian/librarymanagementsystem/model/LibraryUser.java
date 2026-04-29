@@ -1,9 +1,7 @@
 package org.ardian.librarymanagementsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,14 +18,26 @@ public class LibraryUser {
     @GeneratedValue
     private Long id;
 
-    private String username;
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     @OneToMany(mappedBy = "libraryUser")
     private List<Loan> myLoans;
 
-    public LibraryUser(String username, String password) {
-        this.username = username;
+    @Builder
+    public LibraryUser(String email, String password, String firstName, String lastName) {
+        this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 }
