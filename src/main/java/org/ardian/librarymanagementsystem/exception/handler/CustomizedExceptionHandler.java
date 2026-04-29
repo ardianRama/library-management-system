@@ -6,10 +6,12 @@ import org.ardian.librarymanagementsystem.exception.integration.IntegrationExcep
 import org.ardian.librarymanagementsystem.exception.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Global exception handler for the application.
@@ -41,6 +43,26 @@ public class CustomizedExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         return buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(
+            MethodArgumentNotValidException ex
+    ) {
+
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
+
+        ValidationErrorResponse response = new ValidationErrorResponse(
+                LocalDateTime.now(),
+                "Validation failed",
+                errors
+        );
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<ErrorResponse> buildError(

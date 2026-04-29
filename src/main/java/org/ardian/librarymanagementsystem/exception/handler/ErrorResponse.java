@@ -4,6 +4,11 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Standard error response used for application exceptions (business, integration, etc.).
+ * Used for most custom exceptions such as NotFound, Conflict and Integration errors.
+ */
+
 @Getter
 public class ErrorResponse {
 
