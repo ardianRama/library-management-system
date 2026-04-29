@@ -1,6 +1,7 @@
 package org.ardian.librarymanagementsystem.config;
 
 import org.ardian.librarymanagementsystem.model.LibraryUser;
+import org.ardian.librarymanagementsystem.model.Role;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +39,7 @@ public class DataInitializer implements CommandLineRunner {
                             .password(passwordEncoder.encode(JOHN_PASSWORD))
                             .firstName("John")
                             .lastName("Doe")
+                            .role(Role.USER)
                             .build()
             );
         }
@@ -49,6 +51,7 @@ public class DataInitializer implements CommandLineRunner {
                             .password(passwordEncoder.encode(ADMIN_PASSWORD))
                             .firstName("Admin")
                             .lastName("Admin")
+                            .role(Role.ADMIN)
                             .build()
             );
         }

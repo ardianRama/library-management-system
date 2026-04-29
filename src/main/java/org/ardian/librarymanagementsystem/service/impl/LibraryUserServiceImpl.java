@@ -2,6 +2,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
+import org.ardian.librarymanagementsystem.model.Role;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +36,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
+                .role(Role.USER)
                 .build();
 
         repository.save(user);

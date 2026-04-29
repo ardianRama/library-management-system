@@ -4,19 +4,16 @@ import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final LibraryUserService service;
+    private final LibraryUserService libraryUserService;
 
-    public AuthController(LibraryUserService service) {
-        this.service = service;
+    public AuthController(LibraryUserService libraryUserService) {
+        this.libraryUserService = libraryUserService;
     }
 
     @PostMapping("/register")
@@ -24,7 +21,7 @@ public class AuthController {
             @Valid @RequestBody LibraryUserDto dto
     ) {
 
-        service.registerUser(dto);
+        libraryUserService.registerUser(dto);
 
         return ResponseEntity.ok("User registered");
     }

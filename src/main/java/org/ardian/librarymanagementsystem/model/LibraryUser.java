@@ -1,16 +1,15 @@
 package org.ardian.librarymanagementsystem.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class LibraryUser {
 
@@ -30,14 +29,10 @@ public class LibraryUser {
     @Column(nullable = false)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role ;
+
     @OneToMany(mappedBy = "libraryUser")
     private List<Loan> myLoans;
-
-    @Builder
-    public LibraryUser(String email, String password, String firstName, String lastName) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
 }
