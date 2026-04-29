@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Provides a PasswordEncoder bean used to hash passwords in the application.
+ */
+
 @Configuration
 public class PasswordEncoderConfig {
 

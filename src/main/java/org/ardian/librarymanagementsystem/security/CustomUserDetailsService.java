@@ -8,6 +8,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Fetches user from database so Spring Security can log in the user.
+ */
+
 @Service
 public class CustomUserDetailsService
         implements UserDetailsService {
@@ -24,14 +28,14 @@ public class CustomUserDetailsService
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
 
-        LibraryUser user = repository.findByEmail(email)
+        LibraryUser libraryUser = repository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found"));
 
         return User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
+                .username(libraryUser.getEmail())
+                .password(libraryUser.getPassword())
+                .roles(libraryUser.getRole().name())
                 .build();
     }
 }

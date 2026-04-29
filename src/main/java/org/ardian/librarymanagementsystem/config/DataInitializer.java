@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Initializes development users in the database at application startup.
- * Used only for local development/testing.
+ * Used for local development/testing.
  */
 
 @Component

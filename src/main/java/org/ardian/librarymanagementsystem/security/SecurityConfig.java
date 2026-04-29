@@ -8,6 +8,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * Configures Spring Security settings such as authentication and authorization rules.
+ */
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
