@@ -46,7 +46,7 @@ public class CustomizedExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(
+    public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex
     ) {
 
