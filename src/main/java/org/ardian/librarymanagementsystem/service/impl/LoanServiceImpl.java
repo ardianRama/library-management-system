@@ -13,8 +13,6 @@ import org.ardian.librarymanagementsystem.repository.BookRepository;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.ardian.librarymanagementsystem.repository.LoanRepository;
 import org.ardian.librarymanagementsystem.service.LoanService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +34,7 @@ public class LoanServiceImpl implements LoanService {
 
     @Transactional
     @Override
-    public LoanDto borrowBook(Long bookId) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
+    public LoanDto borrowBook(String email, Long bookId) {
 
         LibraryUser user = libraryUserRepository.findByEmail(email)
                 .orElseThrow(() -> new LibraryUserNotFoundException(email));

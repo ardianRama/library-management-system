@@ -4,5 +4,5 @@ import org.ardian.librarymanagementsystem.dto.LoanDto;
 
 public interface LoanService {
 
-    LoanDto borrowBook(Long bookId);
+    LoanDto borrowBook(String email, Long bookId);
 }
