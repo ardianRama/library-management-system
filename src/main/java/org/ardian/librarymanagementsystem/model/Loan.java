@@ -17,7 +17,9 @@ public class Loan {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime borrowedAt;
+
     private LocalDateTime  returnedAt;
 
     @JoinColumn

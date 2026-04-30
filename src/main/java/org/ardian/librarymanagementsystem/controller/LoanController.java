@@ -21,7 +21,7 @@ public class LoanController {
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(@Valid @RequestBody BorrowBookRequest request) {
         return ResponseEntity.ok(
-                loanService.borrowBook(request.getUserId(), request.getBookId())
+                loanService.borrowBook(request.getBookId())
         );
     }
 }

@@ -13,6 +13,8 @@ import org.ardian.librarymanagementsystem.repository.BookRepository;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.ardian.librarymanagementsystem.repository.LoanRepository;
 import org.ardian.librarymanagementsystem.service.LoanService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +36,20 @@ public class LoanServiceImpl implements LoanService {
 
     @Transactional
     @Override
-    public LoanDto borrowBook(Long userId, Long bookId) {
+    public LoanDto borrowBook(Long bookId) {
 
-        LibraryUser user = libraryUserRepository.findById(userId)
-                .orElseThrow(() -> new LibraryUserNotFoundException(userId));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+
+        LibraryUser user = libraryUserRepository.findByEmail(email)
+                .orElseThrow(() -> new LibraryUserNotFoundException(email));
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (book.getAvailableCopies() <= 0) {
 
-            log.warn(
-                    "Attempt to borrow unavailable book. userId={}, bookId={}",
-                    userId,
-                    bookId
-            );
+            log.warn("Attempt to borrow unavailable book. user={}, bookId={}", email, bookId);
 
             throw new BookNotAvailableException(bookId);
         }
@@ -62,12 +63,8 @@ public class LoanServiceImpl implements LoanService {
 
         Loan savedLoan = loanRepository.save(loan);
 
-        log.info(
-                "Book borrowed successfully. loanId={}, userId={}, bookId={}",
-                savedLoan.getId(),
-                userId,
-                bookId
-        );
+        log.info("Book borrowed successfully. loanId={}, user={}, bookId={}",
+                savedLoan.getId(), email, bookId);
 
         return LoanMapper.loanEntityToLoanDto(savedLoan);
     }
