@@ -17,18 +17,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final LibraryUserRepository repository;
+    private final LibraryUserRepository libraryUserRepository;
 
-    public CustomUserDetailsService(
-            LibraryUserRepository repository
-    ) {
-        this.repository = repository;
+    public CustomUserDetailsService(LibraryUserRepository libraryUserRepository) {
+        this.libraryUserRepository = libraryUserRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        LibraryUser libraryUser = repository.findByEmail(email)
+        LibraryUser libraryUser = libraryUserRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Authentication failed - user not found: {}", email);
                     return new UsernameNotFoundException("Invalid credentials");
