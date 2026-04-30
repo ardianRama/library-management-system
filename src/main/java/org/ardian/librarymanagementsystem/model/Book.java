@@ -15,15 +15,23 @@ public class Book {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String author;
+
+    @Column(nullable = false)
     private String firstPublishYear;
+
     private String coverUrl;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String externalId;
 
+    @Column(nullable = false)
     private int totalCopies;
+
     private int availableCopies;
 
     @OneToMany(mappedBy = "book")
