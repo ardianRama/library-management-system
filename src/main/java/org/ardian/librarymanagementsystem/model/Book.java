@@ -22,7 +22,7 @@ public class Book {
     private String author;
 
     @Column(nullable = false)
-    private String firstPublishYear;
+    private Integer firstPublishYear;
 
     private String coverUrl;
 
@@ -38,7 +38,7 @@ public class Book {
     private List<Loan> loanHistory;
 
     @Builder
-    public Book(String title, String author, String firstPublishYear, String coverUrl, String externalId, int totalCopies, int availableCopies) {
+    public Book(String title, String author, Integer firstPublishYear, String coverUrl, String externalId, int totalCopies, int availableCopies) {
         this.title = title;
         this.author = author;
         this.firstPublishYear = firstPublishYear;

@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -17,15 +18,15 @@ public class BookDto {
     @NotBlank
     private String author;
 
-    @NotBlank
-    private String firstPublishYear;
+    @Min(0)
+    private Integer firstPublishYear;
 
     private String coverUrl;
 
     @NotBlank
     private String externalId;
 
-    public BookDto(String title, String author, String firstPublishYear, String coverUrl, String externalId) {
+    public BookDto(String title, String author, Integer firstPublishYear, String coverUrl, String externalId) {
         this.title = title;
         this.author = author;
         this.firstPublishYear = firstPublishYear;

@@ -16,7 +16,7 @@ public class BookDetailedDto {
     private Long id;
     private String title;
     private String author;
-    private String firstPublishYear;
+    private Integer firstPublishYear;
     private String coverUrl;
     private String externalId;
 
