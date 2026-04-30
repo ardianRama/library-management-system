@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class CustomUserDetailsService
-        implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final LibraryUserRepository repository;
 
@@ -25,8 +24,7 @@ public class CustomUserDetailsService
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         LibraryUser libraryUser = repository.findByEmail(email)
                 .orElseThrow(() ->
