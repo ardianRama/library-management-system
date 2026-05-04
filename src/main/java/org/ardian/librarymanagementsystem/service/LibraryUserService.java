@@ -12,4 +12,6 @@ public interface LibraryUserService {
     void deleteLibraryUser(Long id);
 
     List<LibraryUserDetailedDto> getUsers();
+
+    LibraryUserDetailedDto getUserById(Long id);
 }

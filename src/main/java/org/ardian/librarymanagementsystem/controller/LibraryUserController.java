@@ -26,6 +26,11 @@ public class LibraryUserController {
         return libraryUserService.getUsers();
     }
 
+    @GetMapping("/detailed/{userId}")
+    public LibraryUserDetailedDto getDetailedLibraryUser(@PathVariable Long userId) {
+        return libraryUserService.getUserById(userId);
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteLibraryUser(@PathVariable Long userId) {
 

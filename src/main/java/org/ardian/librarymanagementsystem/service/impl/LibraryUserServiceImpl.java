@@ -45,6 +45,13 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     }
 
     @Override
+    public LibraryUserDetailedDto getUserById(Long id) {
+        return libraryUserRepository.findById(id)
+                .map(LibraryUserMapper::libraryUserEntityToLibraryUserDetailedDto)
+                .orElseThrow(() -> new LibraryUserNotFoundException(id));
+    }
+
+    @Override
     public void deleteLibraryUser(Long id) {
 
         LibraryUser user = libraryUserRepository.findById(id)
