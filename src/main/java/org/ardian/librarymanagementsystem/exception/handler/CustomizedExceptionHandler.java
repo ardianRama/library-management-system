@@ -22,27 +22,27 @@ public class CustomizedExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(NotFoundException ex) {
-        return buildError(ex, HttpStatus.NOT_FOUND, "Resource not found");
+        return buildError(ex, HttpStatus.NOT_FOUND, ErrorDetails.RESOURCE_NOT_FOUND);
     }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
-        return buildError(ex, HttpStatus.CONFLICT, "Business rule violation");
+        return buildError(ex, HttpStatus.CONFLICT, ErrorDetails.BUSINESS_RULE_VIOLATION);
     }
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex) {
-        return buildError(ex, HttpStatus.BAD_REQUEST, "Validation error");
+        return buildError(ex, HttpStatus.BAD_REQUEST, ErrorDetails.VALIDATION_ERROR);
     }
 
     @ExceptionHandler(IntegrationException.class)
     public ResponseEntity<ErrorResponse> handleIntegration(IntegrationException ex) {
-        return buildError(ex, HttpStatus.SERVICE_UNAVAILABLE, "External service error");
+        return buildError(ex, HttpStatus.SERVICE_UNAVAILABLE, ErrorDetails.EXTERNAL_SERVICE_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
-        return buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error");
+        return buildError(ex, HttpStatus.INTERNAL_SERVER_ERROR, ErrorDetails.UNEXPECTED_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -58,7 +58,7 @@ public class CustomizedExceptionHandler {
 
         ValidationErrorResponse response = new ValidationErrorResponse(
                 LocalDateTime.now(),
-                "Validation failed",
+                ErrorDetails.VALIDATION_ERROR,
                 errors
         );
 
