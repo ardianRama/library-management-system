@@ -16,7 +16,7 @@ public class LoanNotFoundException extends NotFoundException {
 
     public LoanNotFoundException(Long id) {
         super("No loan found with loanId  " + id);
-        this.id = null;
+        this.id = id;
         this.email = null;
     }
 }
