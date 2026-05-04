@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Request object used when borrowing a book.
+ * Request object used when borrowing and returning a book.
  */
 
 @Getter
 @Setter
-public class BorrowBookRequest {
+public class BookRequest {
 
     @NotNull(message = "Book id is required")
     private Long bookId;

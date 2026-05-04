@@ -6,6 +6,7 @@ import org.ardian.librarymanagementsystem.exception.business.conflict.BookNotAva
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyBorrowedBookException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.LoanNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
@@ -27,20 +28,15 @@ public class LoanServiceImpl implements LoanService {
     private final LibraryUserRepository libraryUserRepository;
     private final LoanRepository loanRepository;
 
-    public LoanServiceImpl(BookRepository bookRepository, LibraryUserRepository libraryUserRepository, LoanRepository loanRepository) {
+    public LoanServiceImpl(
+            BookRepository bookRepository,
+            LibraryUserRepository libraryUserRepository,
+            LoanRepository loanRepository
+    ) {
         this.bookRepository = bookRepository;
         this.libraryUserRepository = libraryUserRepository;
         this.loanRepository = loanRepository;
     }
-
-    /**
-     * for admin
-     */
-
-
-    /**
-     * for user
-     */
 
     @Transactional
     @Override
@@ -50,13 +46,33 @@ public class LoanServiceImpl implements LoanService {
         Book book = getBook(bookId);
 
         validateNotAlreadyBorrowed(user, bookId);
-        validateBookAvailability(book, bookId, email);
+        validateBookAvailability(book, email);
 
         book.setAvailableCopies(book.getAvailableCopies() - 1);
 
         Loan savedLoan = createLoan(user, book);
 
         log.info("Book borrowed successfully. loanId={}, user={}, bookId={}",
+                savedLoan.getId(), email, bookId);
+
+        return LoanMapper.loanEntityToLoanDto(savedLoan);
+    }
+
+    @Transactional
+    @Override
+    public LoanDto returnBook(String email, Long bookId) {
+
+        Loan loan = getActiveLoan(email, bookId);
+
+        Book book = loan.getBook();
+
+        book.setAvailableCopies(book.getAvailableCopies() + 1);
+
+        loan.setReturnedAt(LocalDateTime.now());
+
+        Loan savedLoan = loanRepository.save(loan);
+
+        log.info("Book returned successfully. loanId={}, user={}, bookId={}",
                 savedLoan.getId(), email, bookId);
 
         return LoanMapper.loanEntityToLoanDto(savedLoan);
@@ -72,19 +88,27 @@ public class LoanServiceImpl implements LoanService {
                 .orElseThrow(() -> new BookNotFoundException(bookId));
     }
 
+    private Loan getActiveLoan(String email, Long bookId) {
+        return loanRepository
+                .findByLibraryUserEmailAndBookIdAndReturnedAtIsNull(email, bookId)
+                .orElseThrow(() -> new LoanNotFoundException(bookId, email));
+    }
+
     private void validateNotAlreadyBorrowed(LibraryUser user, Long bookId) {
-        boolean alreadyBorrowed = loanRepository
+        boolean exists = loanRepository
                 .existsByLibraryUserIdAndBookIdAndReturnedAtIsNull(user.getId(), bookId);
 
-        if (alreadyBorrowed) {
+        if (exists) {
             throw new UserAlreadyBorrowedBookException(bookId);
         }
     }
 
-    private void validateBookAvailability(Book book, Long bookId, String email) {
+    private void validateBookAvailability(Book book, String email) {
         if (book.getAvailableCopies() <= 0) {
-            log.warn("Attempt to borrow unavailable book. user={}, bookId={}", email, bookId);
-            throw new BookNotAvailableException(bookId);
+            log.warn("Attempt to borrow unavailable book. user={}, bookId={}",
+                    email, book.getId());
+
+            throw new BookNotAvailableException(book.getId());
         }
     }
 

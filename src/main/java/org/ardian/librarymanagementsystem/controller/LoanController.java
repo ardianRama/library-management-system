@@ -1,7 +1,7 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import jakarta.validation.Valid;
-import org.ardian.librarymanagementsystem.dto.BorrowBookRequest;
+import org.ardian.librarymanagementsystem.dto.BookRequest;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.service.LoanService;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +23,20 @@ public class LoanController {
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(
             @AuthenticationPrincipal User user,
-            @Valid @RequestBody BorrowBookRequest request
+            @Valid @RequestBody BookRequest request
     ) {
         return ResponseEntity.ok(
                 loanService.borrowBook(user.getUsername(), request.getBookId())
+        );
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<LoanDto> returnBook(
+            @AuthenticationPrincipal User user,
+            @RequestBody BookRequest request
+    ) {
+        return ResponseEntity.ok(
+                loanService.returnBook(user.getUsername(), request.getBookId())
         );
     }
 }
