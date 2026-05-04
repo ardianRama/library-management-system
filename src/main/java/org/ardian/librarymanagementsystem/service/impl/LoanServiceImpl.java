@@ -53,6 +53,15 @@ public class LoanServiceImpl implements LoanService {
                 .toList();
     }
 
+    @Override
+    public LoanDto getLoanById(Long loanId) {
+
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
+
+        return LoanMapper.loanEntityToLoanDto(loan);
+    }
+
     /**
      * for user
      */

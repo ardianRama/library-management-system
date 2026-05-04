@@ -25,11 +25,14 @@ public class LoanController {
      * for admin
      */
 
-    @GetMapping()
-    public ResponseEntity<List<LoanDto>> getAllLoans() {
-        return ResponseEntity.ok(
-                loanService.getAllLoans()
-        );
+    @GetMapping
+    public List<LoanDto> getAllLoans() {
+        return loanService.getAllLoans();
+    }
+
+    @GetMapping("/{loanId}")
+    public LoanDto getLoanById(@PathVariable Long loanId) {
+        return loanService.getLoanById(loanId);
     }
 
     /**

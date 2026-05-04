@@ -11,4 +11,6 @@ public interface LoanService {
     LoanDto returnBook(String email, Long bookId);
 
     List<LoanDto> getAllLoans();
+
+    LoanDto getLoanById(Long loanId);
 }
