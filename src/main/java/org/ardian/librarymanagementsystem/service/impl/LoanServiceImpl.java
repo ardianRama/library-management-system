@@ -33,6 +33,15 @@ public class LoanServiceImpl implements LoanService {
         this.loanRepository = loanRepository;
     }
 
+    /**
+     * for admin
+     */
+
+
+    /**
+     * for user
+     */
+
     @Transactional
     @Override
     public LoanDto borrowBook(String email, Long bookId) {

@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.mapper.internal;
 
+import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.model.Role;
@@ -17,6 +18,17 @@ public class LibraryUserMapper {
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .role(role)
+                .build();
+    }
+
+    public static LibraryUserDetailedDto libraryUserEntityToLibraryUserDetailedDto(LibraryUser entity) {
+        return LibraryUserDetailedDto.builder()
+                .id(entity.getId())
+                .email(entity.getEmail())
+                .password(entity.getPassword())
+                .firstName(entity.getFirstName())
+                .lastName(entity.getLastName())
+                .role(entity.getRole())
                 .build();
     }
 }
