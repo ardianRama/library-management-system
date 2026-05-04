@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.Role;
@@ -41,6 +44,25 @@ public class LibraryUserServiceImpl implements LibraryUserService {
                 .toList();
     }
 
+    @Override
+    public void deleteLibraryUser(Long id) {
+
+        LibraryUser user = libraryUserRepository.findById(id)
+                .orElseThrow(() -> new LibraryUserNotFoundException(id));
+
+        boolean hasActiveLoans = user.getMyLoans()
+                .stream()
+                .anyMatch(loan -> loan.getReturnedAt() == null);
+
+        if (hasActiveLoans) {
+            log.warn("Attempt to delete user with active loans. user id={}", id);
+            throw new UserHasActiveLoansException(id);
+        }
+
+        libraryUserRepository.delete(user);
+
+        log.info("Successfully deleted user with id={}", id);
+    }
 
     /**
      * for user

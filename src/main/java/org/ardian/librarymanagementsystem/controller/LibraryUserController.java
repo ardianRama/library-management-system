@@ -2,9 +2,8 @@ package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +24,13 @@ public class LibraryUserController {
     @GetMapping("/detailed")
     public List<LibraryUserDetailedDto> getAllDetailedLibraryUsers() {
         return libraryUserService.getUsers();
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteLibraryUser(@PathVariable Long userId) {
+
+        libraryUserService.deleteLibraryUser(userId);
+
+        return ResponseEntity.noContent().build();
     }
 }
