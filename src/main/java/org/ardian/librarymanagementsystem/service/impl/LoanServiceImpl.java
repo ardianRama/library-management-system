@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -37,6 +38,24 @@ public class LoanServiceImpl implements LoanService {
         this.libraryUserRepository = libraryUserRepository;
         this.loanRepository = loanRepository;
     }
+
+    /**
+     * for admin
+     */
+
+    @Override
+    public List<LoanDto> getAllLoans() {
+
+        List<Loan> loans = loanRepository.findAll();
+
+        return loans.stream()
+                .map(LoanMapper::loanEntityToLoanDto)
+                .toList();
+    }
+
+    /**
+     * for user
+     */
 
     @Transactional
     @Override

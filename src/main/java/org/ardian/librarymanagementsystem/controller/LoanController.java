@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
@@ -18,6 +20,21 @@ public class LoanController {
     public LoanController(LoanService loanService) {
         this.loanService = loanService;
     }
+
+    /**
+     * for admin
+     */
+
+    @GetMapping()
+    public ResponseEntity<List<LoanDto>> getAllLoans() {
+        return ResponseEntity.ok(
+                loanService.getAllLoans()
+        );
+    }
+
+    /**
+     * for user
+     */
 
     //http://localhost:8080/api/loans/borrow
     @PostMapping("/borrow")
