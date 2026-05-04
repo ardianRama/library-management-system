@@ -18,7 +18,7 @@ public class BookDto {
     @NotBlank
     private String author;
 
-    @Min(0)
+    @NotBlank
     private Integer firstPublishYear;
 
     private String coverUrl;
