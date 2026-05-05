@@ -2,12 +2,15 @@ package org.ardian.librarymanagementsystem.controller;
 
 import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.*;
+import org.ardian.librarymanagementsystem.security.annotation.IsAdmin;
+import org.ardian.librarymanagementsystem.security.annotation.IsUser;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@IsUser
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -18,24 +21,19 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    /**
-     * for admin
-     */
-
-    //http://localhost:8080/api/books/detailed
+    @IsAdmin
     @GetMapping("/detailed")
     public List<BookDetailedDto> getAllDetailedBooks() {
         return bookService.getAllDetailedBooksFromLibrary();
     }
 
-    //http://localhost:8080/api/books/search/external?q=harry+potter
-    //http://localhost:8080/api/books/search/external?q=rowling
+    @IsAdmin
     @GetMapping("/search/external")
     public List<BookDto> searchBooksExternal(@RequestParam String q) {
         return bookService.searchBooksFromApi(q);
     }
 
-    //http://localhost:8080/api/books/import
+    @IsAdmin
     @PostMapping("/import")
     public ResponseEntity<BookDetailedDto> addBook(@Valid @RequestBody ImportBookRequest request) {
 
@@ -44,7 +42,7 @@ public class BookController {
         return ResponseEntity.ok(saved);
     }
 
-    //http://localhost:8080/api/books/452/copies
+    @IsAdmin
     @PatchMapping("/{bookId}/copies")
     public ResponseEntity<BookDetailedDto> updateCopies(
             @PathVariable Long bookId,
@@ -55,7 +53,7 @@ public class BookController {
         );
     }
 
-    //http://localhost:8080/api/books/452
+    @IsAdmin
     @DeleteMapping("/{bookId}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
 
@@ -64,18 +62,11 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * for user
-     */
-
-    //http://localhost:8080/api/books
     @GetMapping
     public List<LibraryBookDto> getAllBooks() {
         return bookService.getAllBooks();
     }
 
-    //http://localhost:8080/api/books/search?q=tolkien
-    //http://localhost:8080/api/books/search?q=lord+of+the+rings
     @GetMapping("/search")
     public List<LibraryBookDto> searchBooks(@RequestParam String q) {
         return bookService.searchBooksInLibrary(q);
