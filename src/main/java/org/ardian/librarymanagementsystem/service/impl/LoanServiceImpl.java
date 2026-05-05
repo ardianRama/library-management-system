@@ -45,7 +45,7 @@ public class LoanServiceImpl implements LoanService {
         List<Loan> loans = loanRepository.findAll();
 
         return loans.stream()
-                .map(LoanMapper::loanEntityToLoanDto)
+                .map(LoanMapper::toDto)
                 .toList();
     }
 
@@ -55,7 +55,7 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
 
-        return LoanMapper.loanEntityToLoanDto(loan);
+        return LoanMapper.toDto(loan);
     }
 
     @Transactional
@@ -75,7 +75,7 @@ public class LoanServiceImpl implements LoanService {
         log.info("Book borrowed successfully. loanId={}, user={}, bookId={}",
                 savedLoan.getId(), email, bookId);
 
-        return LoanMapper.loanEntityToLoanDto(savedLoan);
+        return LoanMapper.toDto(savedLoan);
     }
 
     @Transactional
@@ -95,7 +95,7 @@ public class LoanServiceImpl implements LoanService {
         log.info("Book returned successfully. loanId={}, user={}, bookId={}",
                 savedLoan.getId(), email, bookId);
 
-        return LoanMapper.loanEntityToLoanDto(savedLoan);
+        return LoanMapper.toDto(savedLoan);
     }
 
     private LibraryUser getUser(String email) {

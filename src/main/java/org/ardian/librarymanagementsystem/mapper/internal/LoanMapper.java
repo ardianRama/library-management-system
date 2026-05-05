@@ -9,7 +9,7 @@ import org.ardian.librarymanagementsystem.model.Loan;
 
 public class LoanMapper {
 
-    public static LoanDto loanEntityToLoanDto(Loan loan) {
+    public static LoanDto toDto(Loan loan) {
         return LoanDto.builder().
                 id(loan.getId())
                 .borrowedAt(loan.getBorrowedAt())
