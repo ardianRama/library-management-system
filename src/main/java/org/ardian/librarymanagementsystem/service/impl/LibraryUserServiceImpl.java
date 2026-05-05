@@ -32,6 +32,27 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     }
 
     @Override
+    public void registerUser(LibraryUserDto dto) {
+
+        if (libraryUserRepository.existsByEmail(dto.getEmail())) {
+
+            log.warn("Attempt to register user with existing email: {}", dto.getEmail());
+
+            throw new UserAlreadyExistsException(dto.getEmail());
+        }
+
+        LibraryUser user = LibraryUserMapper.toEntity(dto, Role.USER);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        LibraryUser saved = libraryUserRepository.save(user);
+
+        log.info("User registered successfully. userId={}, email={}",
+                saved.getId(),
+                saved.getEmail());
+    }
+
+    @Override
     public List<LibraryUserDetailedDto> getUsers() {
         return libraryUserRepository.findAll()
                 .stream()
@@ -64,26 +85,5 @@ public class LibraryUserServiceImpl implements LibraryUserService {
         libraryUserRepository.delete(user);
 
         log.info("Successfully deleted user with id={}", id);
-    }
-
-    @Override
-    public void registerUser(LibraryUserDto dto) {
-
-        if (libraryUserRepository.existsByEmail(dto.getEmail())) {
-
-            log.warn("Attempt to register user with existing email: {}", dto.getEmail());
-
-            throw new UserAlreadyExistsException(dto.getEmail());
-        }
-
-        LibraryUser user = LibraryUserMapper.toEntity(dto, Role.USER);
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        LibraryUser saved = libraryUserRepository.save(user);
-
-        log.info("User registered successfully. userId={}, email={}",
-                saved.getId(),
-                saved.getEmail());
     }
 }

@@ -9,9 +9,9 @@ public interface LibraryUserService {
 
     void registerUser(LibraryUserDto dto);
 
-    void deleteLibraryUser(Long id);
-
     List<LibraryUserDetailedDto> getUsers();
 
     LibraryUserDetailedDto getUserById(Long id);
+
+    void deleteLibraryUser(Long id);
 }
