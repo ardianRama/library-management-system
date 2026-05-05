@@ -35,10 +35,6 @@ public class BookServiceImpl implements BookService {
         this.bookRepository = bookRepository;
     }
 
-    /**
-     * Admin functions
-     */
-
     @Override
     @Cacheable(value = "books", key = "#query")
     public List<BookDto> searchBooksFromApi(String query) {
@@ -155,10 +151,6 @@ public class BookServiceImpl implements BookService {
                 .map(BookMapper::bookEntityToBookDetailedDto)
                 .toList();
     }
-
-    /**
-     * User functions
-     */
 
     @Override
     public List<LibraryBookDto> getAllBooks() {

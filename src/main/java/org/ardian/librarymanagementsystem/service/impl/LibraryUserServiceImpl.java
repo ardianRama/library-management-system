@@ -31,10 +31,6 @@ public class LibraryUserServiceImpl implements LibraryUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    /**
-     * for admin
-     */
-
     @Override
     public List<LibraryUserDetailedDto> getUsers() {
         return libraryUserRepository.findAll()
@@ -69,10 +65,6 @@ public class LibraryUserServiceImpl implements LibraryUserService {
 
         log.info("Successfully deleted user with id={}", id);
     }
-
-    /**
-     * for user
-     */
 
     @Override
     public void registerUser(LibraryUserDto dto) {

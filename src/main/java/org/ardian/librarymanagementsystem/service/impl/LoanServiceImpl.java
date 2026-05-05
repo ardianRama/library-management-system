@@ -39,10 +39,6 @@ public class LoanServiceImpl implements LoanService {
         this.loanRepository = loanRepository;
     }
 
-    /**
-     * for admin
-     */
-
     @Override
     public List<LoanDto> getAllLoans() {
 
@@ -61,10 +57,6 @@ public class LoanServiceImpl implements LoanService {
 
         return LoanMapper.loanEntityToLoanDto(loan);
     }
-
-    /**
-     * for user
-     */
 
     @Transactional
     @Override
