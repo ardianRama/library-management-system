@@ -10,6 +10,10 @@ import org.ardian.librarymanagementsystem.dto.BookDto;
 
 public class OpenLibraryMapper {
 
+    private static final String UNKNOWN_AUTHOR = "Unknown";
+    private static final String WORKS_PREFIX = "/works/";
+    private static final String COVER_SIZE_SUFFIX = "-M.jpg";
+
     public static BookDto bookDocToBookDto(BookDoc doc, OpenLibraryProperties properties) {
 
         String authors = getAuthor(doc);
@@ -27,8 +31,9 @@ public class OpenLibraryMapper {
 
     private static String getAuthor(BookDoc doc) {
         if (doc.getAuthorName() == null || doc.getAuthorName().isEmpty()) {
-            return "Unknown";
+            return UNKNOWN_AUTHOR;
         }
+
         return doc.getAuthorName().getFirst();
     }
 
@@ -37,11 +42,14 @@ public class OpenLibraryMapper {
             return null;
         }
 
-        return properties.getCoverBaseUrl() + coverId + "-M.jpg";
+        return properties.getCoverBaseUrl() + coverId + COVER_SIZE_SUFFIX;
     }
 
     private static String normalizeExternalId(String key) {
-        if (key == null) return null;
-        return key.replace("/works/", "");
+        if (key == null) {
+            return null;
+        }
+
+        return key.replace(WORKS_PREFIX, "");
     }
 }
