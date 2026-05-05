@@ -1,12 +1,14 @@
 package org.ardian.librarymanagementsystem.controller;
 
 import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
+import org.ardian.librarymanagementsystem.security.annotation.IsAdmin;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@IsAdmin
 @RestController
 @RequestMapping("/api/user")
 public class LibraryUserController {
@@ -16,10 +18,6 @@ public class LibraryUserController {
     public LibraryUserController(LibraryUserService libraryUserService) {
         this.libraryUserService = libraryUserService;
     }
-
-    /**
-     *  for admin
-     */
 
     @GetMapping("/detailed")
     public List<LibraryUserDetailedDto> getAllDetailedLibraryUsers() {

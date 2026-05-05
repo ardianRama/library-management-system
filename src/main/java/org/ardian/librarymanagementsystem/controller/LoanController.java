@@ -3,6 +3,8 @@ package org.ardian.librarymanagementsystem.controller;
 import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.BookRequest;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
+import org.ardian.librarymanagementsystem.security.annotation.IsAdmin;
+import org.ardian.librarymanagementsystem.security.annotation.IsUser;
 import org.ardian.librarymanagementsystem.service.LoanService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@IsUser
 @RestController
 @RequestMapping("/api/loans")
 public class LoanController {
@@ -21,25 +24,18 @@ public class LoanController {
         this.loanService = loanService;
     }
 
-    /**
-     * for admin
-     */
-
+    @IsAdmin
     @GetMapping
     public List<LoanDto> getAllLoans() {
         return loanService.getAllLoans();
     }
 
+    @IsAdmin
     @GetMapping("/{loanId}")
     public LoanDto getLoanById(@PathVariable Long loanId) {
         return loanService.getLoanById(loanId);
     }
 
-    /**
-     * for user
-     */
-
-    //http://localhost:8080/api/loans/borrow
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(
             @AuthenticationPrincipal User user,
