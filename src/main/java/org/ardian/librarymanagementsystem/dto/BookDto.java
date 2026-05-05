@@ -1,7 +1,8 @@
 package org.ardian.librarymanagementsystem.dto;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 
 /**
@@ -18,7 +19,8 @@ public class BookDto {
     @NotBlank
     private String author;
 
-    @NotBlank
+    @Positive
+    @NotNull
     private Integer firstPublishYear;
 
     private String coverUrl;
