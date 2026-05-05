@@ -35,14 +35,14 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     public List<LibraryUserDetailedDto> getUsers() {
         return libraryUserRepository.findAll()
                 .stream()
-                .map(LibraryUserMapper::libraryUserEntityToLibraryUserDetailedDto)
+                .map(LibraryUserMapper::toDetailedDto)
                 .toList();
     }
 
     @Override
     public LibraryUserDetailedDto getUserById(Long id) {
         return libraryUserRepository.findById(id)
-                .map(LibraryUserMapper::libraryUserEntityToLibraryUserDetailedDto)
+                .map(LibraryUserMapper::toDetailedDto)
                 .orElseThrow(() -> new LibraryUserNotFoundException(id));
     }
 
@@ -76,7 +76,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
             throw new UserAlreadyExistsException(dto.getEmail());
         }
 
-        LibraryUser user = LibraryUserMapper.libraryUserDtoToLibraryUserEntity(dto, Role.USER);
+        LibraryUser user = LibraryUserMapper.toEntity(dto, Role.USER);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

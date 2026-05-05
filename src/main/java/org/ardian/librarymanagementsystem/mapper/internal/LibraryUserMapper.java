@@ -11,7 +11,7 @@ import org.ardian.librarymanagementsystem.model.Role;
 
 public class LibraryUserMapper {
 
-    public static LibraryUser libraryUserDtoToLibraryUserEntity(LibraryUserDto dto, Role role) {
+    public static LibraryUser toEntity(LibraryUserDto dto, Role role) {
         return LibraryUser.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
@@ -21,7 +21,7 @@ public class LibraryUserMapper {
                 .build();
     }
 
-    public static LibraryUserDetailedDto libraryUserEntityToLibraryUserDetailedDto(LibraryUser entity) {
+    public static LibraryUserDetailedDto toDetailedDto(LibraryUser entity) {
         return LibraryUserDetailedDto.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
