@@ -51,11 +51,7 @@ public class OpenLibraryBookClient implements BookClient {
 
             log.error("OpenLibrary API call failed. query={}", query, e);
 
-            throw new OpenLibraryException(
-                    query,
-                    "External book service unavailable",
-                    e
-            );
+            throw new OpenLibraryException(query, e);
         }
     }
 }

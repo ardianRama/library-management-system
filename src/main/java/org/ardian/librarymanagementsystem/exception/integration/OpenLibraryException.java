@@ -11,14 +11,11 @@ import lombok.Getter;
 public class OpenLibraryException extends IntegrationException  {
 
     private final String query;
+    private static final String DEFAULT_MESSAGE =
+            "External book service unavailable";
 
-    public OpenLibraryException(String query, String message) {
-        super(message);
-        this.query = query;
-    }
-
-    public OpenLibraryException(String query, String message, Throwable cause) {
-        super(message, cause);
+    public OpenLibraryException(String query, Throwable cause) {
+        super(DEFAULT_MESSAGE, cause);
         this.query = query;
     }
 }
