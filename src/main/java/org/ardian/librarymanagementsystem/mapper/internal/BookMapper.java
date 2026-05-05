@@ -29,7 +29,7 @@ public class BookMapper {
                 .author(book.getAuthor())
                 .firstPublishYear(book.getFirstPublishYear())
                 .coverUrl(book.getCoverUrl())
-                .availableCopies(book.getTotalCopies())
+                .availableCopies(book.getAvailableCopies())
                 .build();
     }
 
