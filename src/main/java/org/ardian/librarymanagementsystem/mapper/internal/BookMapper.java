@@ -11,7 +11,7 @@ import org.ardian.librarymanagementsystem.model.Book;
 
 public class BookMapper {
 
-    public static Book bookDtoToBookEntity(BookDto dto, int totalCopies) {
+    public static Book toEntity(BookDto dto, int totalCopies) {
         return Book.builder()
                 .title(dto.getTitle())
                 .author(dto.getAuthor())
@@ -22,7 +22,7 @@ public class BookMapper {
                 .build();
     }
 
-    public static LibraryBookDto bookEntityToLibraryBookDto(Book book) {
+    public static LibraryBookDto toLibraryDto(Book book) {
         return LibraryBookDto.builder()
                 .title(book.getTitle())
                 .id(book.getId())
@@ -33,7 +33,7 @@ public class BookMapper {
                 .build();
     }
 
-    public static BookDetailedDto bookEntityToBookDetailedDto(Book book) {
+    public static BookDetailedDto toDetailedDto(Book book) {
         return BookDetailedDto.builder()
                 .id(book.getId())
                 .title(book.getTitle())

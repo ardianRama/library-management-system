@@ -67,7 +67,7 @@ public class BookServiceImpl implements BookService {
             throw new BookAlreadyExistsException(dto.getExternalId());
         }
 
-        Book book = BookMapper.bookDtoToBookEntity(dto, totalCopies);
+        Book book = BookMapper.toEntity(dto, totalCopies);
         book.setAvailableCopies(totalCopies);
 
         Book saved = bookRepository.save(book);
@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
                 saved.getExternalId(),
                 saved.getTotalCopies());
 
-        return BookMapper.bookEntityToBookDetailedDto(saved);
+        return BookMapper.toDetailedDto(saved);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class BookServiceImpl implements BookService {
                 saved.getTotalCopies()
         );
 
-        return BookMapper.bookEntityToBookDetailedDto(saved);
+        return BookMapper.toDetailedDto(saved);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDetailedDto> getAllDetailedBooksFromLibrary() {
         return bookRepository.findAll()
                 .stream()
-                .map(BookMapper::bookEntityToBookDetailedDto)
+                .map(BookMapper::toDetailedDto)
                 .toList();
     }
 
@@ -156,7 +156,7 @@ public class BookServiceImpl implements BookService {
     public List<LibraryBookDto> getAllBooks() {
         return bookRepository.findAll()
                 .stream()
-                .map(BookMapper::bookEntityToLibraryBookDto)
+                .map(BookMapper::toLibraryDto)
                 .toList();
     }
 
@@ -170,7 +170,7 @@ public class BookServiceImpl implements BookService {
         return bookRepository
                 .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(query, query)
                 .stream()
-                .map(BookMapper::bookEntityToLibraryBookDto)
+                .map(BookMapper::toLibraryDto)
                 .toList();
     }
 }
