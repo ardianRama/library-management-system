@@ -22,12 +22,6 @@ public class BookController {
     }
 
     @IsAdmin
-    @GetMapping("/detailed")
-    public List<BookDetailedDto> getAllDetailedBooks() {
-        return bookService.getAllDetailedBooksFromLibrary();
-    }
-
-    @IsAdmin
     @GetMapping("/search/external")
     public List<BookDto> searchBooksExternal(@RequestParam String q) {
         return bookService.searchBooksFromApi(q);
@@ -62,13 +56,19 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public List<LibraryBookDto> getAllBooks() {
-        return bookService.getAllBooks();
+    @IsAdmin
+    @GetMapping("/detailed")
+    public List<BookDetailedDto> getAllDetailedBooks() {
+        return bookService.getAllDetailedBooksFromLibrary();
     }
 
     @GetMapping("/search")
     public List<LibraryBookDto> searchBooks(@RequestParam String q) {
         return bookService.searchBooksInLibrary(q);
+    }
+
+    @GetMapping
+    public List<LibraryBookDto> getAllBooks() {
+        return bookService.getAllBooks();
     }
 }

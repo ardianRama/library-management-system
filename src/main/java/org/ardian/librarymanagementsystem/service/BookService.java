@@ -14,11 +14,11 @@ public interface BookService {
 
     BookDetailedDto updateTotalCopies(Long bookId, int totalCopies);
 
-    List<LibraryBookDto> getAllBooks();
-
-    List<LibraryBookDto> searchBooksInLibrary(String query);
+    void deleteBook(Long bookId);
 
     List<BookDetailedDto> getAllDetailedBooksFromLibrary();
 
-    void deleteBook(Long bookId);
+    List<LibraryBookDto> searchBooksInLibrary(String query);
+
+    List<LibraryBookDto> getAllBooks();
 }

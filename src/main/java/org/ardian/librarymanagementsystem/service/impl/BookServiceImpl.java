@@ -153,14 +153,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<LibraryBookDto> getAllBooks() {
-        return bookRepository.findAll()
-                .stream()
-                .map(BookMapper::toLibraryDto)
-                .toList();
-    }
-
-    @Override
     public List<LibraryBookDto> searchBooksInLibrary(String query) {
 
         if (query == null || query.isBlank()) {
@@ -169,6 +161,14 @@ public class BookServiceImpl implements BookService {
 
         return bookRepository
                 .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(query, query)
+                .stream()
+                .map(BookMapper::toLibraryDto)
+                .toList();
+    }
+
+    @Override
+    public List<LibraryBookDto> getAllBooks() {
+        return bookRepository.findAll()
                 .stream()
                 .map(BookMapper::toLibraryDto)
                 .toList();
