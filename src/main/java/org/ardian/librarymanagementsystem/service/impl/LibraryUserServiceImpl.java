@@ -5,7 +5,6 @@ import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
-import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
