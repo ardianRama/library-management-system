@@ -39,25 +39,6 @@ public class LoanServiceImpl implements LoanService {
         this.loanRepository = loanRepository;
     }
 
-    @Override
-    public List<LoanDto> getAllLoans() {
-
-        List<Loan> loans = loanRepository.findAll();
-
-        return loans.stream()
-                .map(LoanMapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public LoanDto getLoanById(Long loanId) {
-
-        Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new LoanNotFoundException(loanId));
-
-        return LoanMapper.toDto(loan);
-    }
-
     @Transactional
     @Override
     public LoanDto borrowBook(String email, Long bookId) {
@@ -96,6 +77,25 @@ public class LoanServiceImpl implements LoanService {
                 savedLoan.getId(), email, bookId);
 
         return LoanMapper.toDto(savedLoan);
+    }
+
+    @Override
+    public List<LoanDto> getAllLoans() {
+
+        List<Loan> loans = loanRepository.findAll();
+
+        return loans.stream()
+                .map(LoanMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public LoanDto getLoanById(Long loanId) {
+
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
+
+        return LoanMapper.toDto(loan);
     }
 
     private LibraryUser getUser(String email) {

@@ -24,18 +24,6 @@ public class LoanController {
         this.loanService = loanService;
     }
 
-    @IsAdmin
-    @GetMapping
-    public List<LoanDto> getAllLoans() {
-        return loanService.getAllLoans();
-    }
-
-    @IsAdmin
-    @GetMapping("/{loanId}")
-    public LoanDto getLoanById(@PathVariable Long loanId) {
-        return loanService.getLoanById(loanId);
-    }
-
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(
             @AuthenticationPrincipal User user,
@@ -54,5 +42,17 @@ public class LoanController {
         return ResponseEntity.ok(
                 loanService.returnBook(user.getUsername(), request.getBookId())
         );
+    }
+
+    @IsAdmin
+    @GetMapping
+    public List<LoanDto> getAllLoans() {
+        return loanService.getAllLoans();
+    }
+
+    @IsAdmin
+    @GetMapping("/{loanId}")
+    public LoanDto getLoanById(@PathVariable Long loanId) {
+        return loanService.getLoanById(loanId);
     }
 }
