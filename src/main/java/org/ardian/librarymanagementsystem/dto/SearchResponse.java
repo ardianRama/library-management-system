@@ -10,5 +10,5 @@ import java.util.List;
 
 @Getter
 public class SearchResponse {
-    public List<BookDoc> docs;
+    private List<BookDoc> docs;
 }
