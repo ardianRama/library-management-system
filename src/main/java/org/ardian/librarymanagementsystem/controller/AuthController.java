@@ -2,6 +2,7 @@ package org.ardian.librarymanagementsystem.controller;
 
 import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
+import org.ardian.librarymanagementsystem.security.annotation.IsAnonymousOrAdmin;
 import org.ardian.librarymanagementsystem.service.LibraryUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class AuthController {
         this.libraryUserService = libraryUserService;
     }
 
+    @IsAnonymousOrAdmin
     @PostMapping("/register")
     public ResponseEntity<Void> register(@Valid @RequestBody LibraryUserDto dto) {
 
