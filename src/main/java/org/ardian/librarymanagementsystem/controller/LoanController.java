@@ -6,13 +6,11 @@ import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.security.annotation.IsAdmin;
 import org.ardian.librarymanagementsystem.security.annotation.IsUser;
 import org.ardian.librarymanagementsystem.service.LoanService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 import java.util.List;
 
 @IsUser
@@ -31,15 +29,10 @@ public class LoanController {
             @AuthenticationPrincipal User user,
             @Valid @RequestBody BookRequest request) {
 
-        LoanDto saved = loanService.borrowBook(user.getUsername(), request.getBookId());
+        LoanDto saved =
+                loanService.borrowBook(user.getUsername(), request.getBookId());
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .path("/api/loans/{loanId}")
-                .buildAndExpand(saved.getId())
-                .toUri();
-
-        return ResponseEntity.created(location).body(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PostMapping("/return")
@@ -58,9 +51,11 @@ public class LoanController {
         return loanService.getAllLoans();
     }
 
-    @IsAdmin
     @GetMapping("/{loanId}")
-    public LoanDto getLoanById(@PathVariable Long loanId) {
-        return loanService.getLoanById(loanId);
+    public LoanDto getLoanById(
+            @AuthenticationPrincipal User user,
+            @PathVariable Long loanId
+    ) {
+        return loanService.getLoanById(loanId, user.getUsername());
     }
 }

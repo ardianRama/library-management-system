@@ -11,6 +11,7 @@ import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.model.Loan;
+import org.ardian.librarymanagementsystem.model.Role;
 import org.ardian.librarymanagementsystem.repository.BookRepository;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.ardian.librarymanagementsystem.repository.LoanRepository;
@@ -90,12 +91,15 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public LoanDto getLoanById(Long loanId) {
+    public LoanDto getLoanById(Long loanId, String email) {
 
-        Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new LoanNotFoundException(loanId));
+        LibraryUser user = getUser(email);
 
-        return LoanMapper.toDto(loan);
+        if (user.getRole() == Role.ADMIN) {
+            return getLoanForAdmin(loanId);
+        }
+
+        return getLoanForUser(user, loanId);
     }
 
     private LibraryUser getUser(String email) {
@@ -139,5 +143,22 @@ public class LoanServiceImpl implements LoanService {
         loan.setBorrowedAt(LocalDateTime.now());
 
         return loanRepository.save(loan);
+    }
+
+    private LoanDto getLoanForAdmin(Long loanId) {
+
+        return loanRepository.findById(loanId)
+                .map(LoanMapper::toDto)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
+    }
+
+    private LoanDto getLoanForUser(LibraryUser user, Long loanId) {
+
+        return user.getMyLoans()
+                .stream()
+                .filter(loan -> loan.getId().equals(loanId))
+                .findFirst()
+                .map(LoanMapper::toDto)
+                .orElseThrow(() -> new LoanNotFoundException(loanId));
     }
 }
