@@ -3,9 +3,9 @@ package org.ardian.librarymanagementsystem.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookNotAvailableException;
-import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyBorrowedBookException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
-import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.LoanNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
@@ -106,7 +106,7 @@ public class LoanServiceImpl implements LoanService {
 
     private LibraryUser getUser(String email) {
         return libraryUserRepository.findByEmail(email)
-                .orElseThrow(LibraryUserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
     }
 
     private Book getBook(Long bookId) {
@@ -125,7 +125,7 @@ public class LoanServiceImpl implements LoanService {
                 .existsByLibraryUserIdAndBookIdAndReturnedAtIsNull(user.getId(), bookId);
 
         if (exists) {
-            throw new UserAlreadyBorrowedBookException();
+            throw new UserHasActiveLoansException("User already has an active loan for this book");
         }
     }
 

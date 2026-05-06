@@ -1,8 +1,8 @@
 package org.ardian.librarymanagementsystem.exception.business.notfound;
 
-public class LibraryUserNotFoundException extends NotFoundException {
+public class UserNotFoundException extends NotFoundException {
 
-    public LibraryUserNotFoundException() {
+    public UserNotFoundException() {
         super("User not found");
     }
 }

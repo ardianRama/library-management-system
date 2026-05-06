@@ -5,7 +5,7 @@ import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
-import org.ardian.librarymanagementsystem.exception.business.notfound.LibraryUserNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.Role;
@@ -64,14 +64,14 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     public LibraryUserDetailedDto getUserById(Long id) {
         return libraryUserRepository.findById(id)
                 .map(LibraryUserMapper::toDetailedDto)
-                .orElseThrow(LibraryUserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public void deleteLibraryUser(Long id) {
 
         LibraryUser user = libraryUserRepository.findById(id)
-                .orElseThrow(LibraryUserNotFoundException::new);
+                .orElseThrow(UserNotFoundException::new);
 
         boolean hasActiveLoans = user.getMyLoans()
                 .stream()
@@ -79,7 +79,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
 
         if (hasActiveLoans) {
             log.warn("Attempt to delete user with active loans. user id={}", id);
-            throw new UserHasActiveLoansException();
+            throw new UserHasActiveLoansException("User cannot be deleted while having active loans");
         }
 
         libraryUserRepository.delete(user);
