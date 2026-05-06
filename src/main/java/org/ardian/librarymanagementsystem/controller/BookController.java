@@ -23,15 +23,15 @@ public class BookController {
 
     @IsAdmin
     @GetMapping("/search/external")
-    public List<BookDto> searchBooksExternal(@RequestParam String q) {
-        return bookService.searchBooksFromApi(q);
+    public List<BookDto> searchExternalBooks(@RequestParam String q) {
+        return bookService.searchExternalBooks(q);
     }
 
     @IsAdmin
     @PostMapping("/import")
-    public ResponseEntity<BookDetailedDto> addBook(@Valid @RequestBody ImportBookRequest request) {
+    public ResponseEntity<BookDetailedDto> importBook(@Valid @RequestBody ImportBookRequest request) {
 
-        BookDetailedDto saved = bookService.addBook(request.getBook(), request.getTotalCopies());
+        BookDetailedDto saved = bookService.createBook(request.getBook(), request.getTotalCopies());
 
         return ResponseEntity.ok(saved);
     }
@@ -69,8 +69,8 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<LibraryBookDto> searchBooks(@RequestParam String q) {
-        return bookService.searchBooksInLibrary(q);
+    public List<LibraryBookDto> searchLibraryBooks(@RequestParam String q) {
+        return bookService.searchLibraryBooks(q);
     }
 
     @GetMapping

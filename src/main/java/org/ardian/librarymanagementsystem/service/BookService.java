@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface BookService {
 
-    List<BookDto> searchBooksFromApi(String query);
+    List<BookDto> searchExternalBooks(String query);
 
-    BookDetailedDto addBook(BookDto dto, int totalCopies);
+    BookDetailedDto createBook(BookDto dto, int totalCopies);
 
     BookDetailedDto updateTotalCopies(Long bookId, int totalCopies);
 
@@ -20,7 +20,7 @@ public interface BookService {
 
     BookDetailedDto getDetailedBook(Long bookId);
 
-    List<LibraryBookDto> searchBooksInLibrary(String query);
+    List<LibraryBookDto> searchLibraryBooks(String query);
 
     List<LibraryBookDto> getAllBooks();
 }

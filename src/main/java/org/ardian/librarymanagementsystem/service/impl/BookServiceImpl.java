@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Cacheable(value = "books", key = "#query")
-    public List<BookDto> searchBooksFromApi(String query) {
+    public List<BookDto> searchExternalBooks(String query) {
 
         if (query == null || query.isBlank()) {
             throw new InvalidSearchException();
@@ -57,7 +57,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDetailedDto addBook(BookDto dto, int totalCopies) {
+    public BookDetailedDto createBook(BookDto dto, int totalCopies) {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
 
@@ -160,7 +160,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<LibraryBookDto> searchBooksInLibrary(String query) {
+    public List<LibraryBookDto> searchLibraryBooks(String query) {
 
         if (query == null || query.isBlank()) {
             throw new InvalidSearchException();
