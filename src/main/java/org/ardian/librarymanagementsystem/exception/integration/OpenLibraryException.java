@@ -7,10 +7,7 @@ package org.ardian.librarymanagementsystem.exception.integration;
 
 public class OpenLibraryException extends IntegrationException  {
 
-    private static final String DEFAULT_MESSAGE =
-            "External book service unavailable";
-
-    public OpenLibraryException(String query, Throwable cause) {
-        super(DEFAULT_MESSAGE, cause);
+    public OpenLibraryException(Throwable cause) {
+        super("External book service unavailable", cause);
     }
 }
