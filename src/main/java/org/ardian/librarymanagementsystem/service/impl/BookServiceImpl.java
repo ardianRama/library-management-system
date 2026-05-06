@@ -43,8 +43,6 @@ public class BookServiceImpl implements BookService {
             throw new InvalidSearchException();
         }
 
-        log.info("Searching OpenLibrary API. query={}", query);
-
         List<BookDto> books = bookClient.fetchBooks(query)
                 .stream()
                 .map(doc -> OpenLibraryMapper.bookDocToBookDto(doc, properties))
@@ -61,7 +59,7 @@ public class BookServiceImpl implements BookService {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
 
-            log.warn("Attempt to add duplicate book. externalId={}",
+            log.info("Attempt to add duplicate book. externalId={}",
                     dto.getExternalId());
 
             throw new BookAlreadyExistsException();
@@ -72,10 +70,7 @@ public class BookServiceImpl implements BookService {
 
         Book saved = bookRepository.save(book);
 
-        log.info("Book added successfully. bookId={}, externalId={}, totalCopies={}",
-                saved.getId(),
-                saved.getExternalId(),
-                saved.getTotalCopies());
+        log.info("Book created. bookId={}, externalId={}", saved.getId(), saved.getExternalId());
 
         return BookMapper.toDetailedDto(saved);
     }
@@ -90,8 +85,8 @@ public class BookServiceImpl implements BookService {
 
         if (totalCopies < borrowed) {
 
-            log.warn(
-                    "Invalid totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
+            log.info(
+                    "Rejected totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
                     bookId,
                     totalCopies,
                     borrowed
