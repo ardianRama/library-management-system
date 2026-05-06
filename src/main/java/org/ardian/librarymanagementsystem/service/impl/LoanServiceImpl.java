@@ -173,10 +173,8 @@ public class LoanServiceImpl implements LoanService {
 
     private LoanDto getLoanForUser(LibraryUser user, Long loanId) {
 
-        return user.getMyLoans()
-                .stream()
-                .filter(loan -> loan.getId().equals(loanId))
-                .findFirst()
+        return loanRepository
+                .findByIdAndLibraryUserEmailAndReturnedAtIsNull(loanId, user.getEmail())
                 .map(LoanMapper::toDto)
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
     }

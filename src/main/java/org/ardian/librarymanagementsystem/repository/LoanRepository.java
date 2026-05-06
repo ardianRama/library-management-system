@@ -12,5 +12,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     Optional<Loan> findByLibraryUserEmailAndBookIdAndReturnedAtIsNull(String email, Long bookId);
 
+    Optional<Loan> findByIdAndLibraryUserEmailAndReturnedAtIsNull(Long loanId, String email);
+
     List<Loan> findAllByLibraryUserEmailAndReturnedAtIsNull(String email);
 }
