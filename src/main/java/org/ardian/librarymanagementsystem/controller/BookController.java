@@ -59,7 +59,13 @@ public class BookController {
     @IsAdmin
     @GetMapping("/detailed")
     public List<BookDetailedDto> getAllDetailedBooks() {
-        return bookService.getAllDetailedBooksFromLibrary();
+        return bookService.getAllDetailedBooks();
+    }
+
+    @IsAdmin
+    @GetMapping("/detailed/{bookId}")
+    public BookDetailedDto getDetailedBook(@PathVariable Long bookId) {
+        return bookService.getDetailedBook(bookId);
     }
 
     @GetMapping("/search")

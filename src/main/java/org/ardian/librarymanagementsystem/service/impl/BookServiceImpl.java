@@ -145,11 +145,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDetailedDto> getAllDetailedBooksFromLibrary() {
+    public List<BookDetailedDto> getAllDetailedBooks() {
         return bookRepository.findAll()
                 .stream()
                 .map(BookMapper::toDetailedDto)
                 .toList();
+    }
+
+    @Override
+    public BookDetailedDto getDetailedBook(Long bookId) {
+        return bookRepository.findById(bookId)
+                .map(BookMapper::toDetailedDto)
+                .orElseThrow(() -> new BookNotFoundException(bookId));
     }
 
     @Override

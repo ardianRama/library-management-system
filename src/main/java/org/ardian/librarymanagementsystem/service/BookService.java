@@ -16,7 +16,9 @@ public interface BookService {
 
     void deleteBook(Long bookId);
 
-    List<BookDetailedDto> getAllDetailedBooksFromLibrary();
+    List<BookDetailedDto> getAllDetailedBooks();
+
+    BookDetailedDto getDetailedBook(Long bookId);
 
     List<LibraryBookDto> searchBooksInLibrary(String query);
 
