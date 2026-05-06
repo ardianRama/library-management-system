@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @IsUser
@@ -27,11 +29,17 @@ public class LoanController {
     @PostMapping("/borrow")
     public ResponseEntity<LoanDto> borrowBook(
             @AuthenticationPrincipal User user,
-            @Valid @RequestBody BookRequest request
-    ) {
-        return ResponseEntity.ok(
-                loanService.borrowBook(user.getUsername(), request.getBookId())
-        );
+            @Valid @RequestBody BookRequest request) {
+
+        LoanDto saved = loanService.borrowBook(user.getUsername(), request.getBookId());
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/api/loans/{loanId}")
+                .buildAndExpand(saved.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(saved);
     }
 
     @PostMapping("/return")

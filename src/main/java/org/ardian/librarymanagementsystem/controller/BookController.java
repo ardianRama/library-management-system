@@ -37,7 +37,7 @@ public class BookController {
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
-                .path("/books/detailed/{bookId}")
+                .path("api/books/detailed/{bookId}")
                 .buildAndExpand(saved.getId())
                 .toUri();
 
