@@ -81,13 +81,15 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<LoanDto> getAllLoans() {
+    public List<LoanDto> getAllLoans(String email) {
 
-        List<Loan> loans = loanRepository.findAll();
+        LibraryUser user = getUser(email);
 
-        return loans.stream()
-                .map(LoanMapper::toDto)
-                .toList();
+        if (user.getRole() == Role.ADMIN) {
+            return getAllLoansForAdmin();
+        }
+
+        return getAllActiveLoansForUser(email);
     }
 
     @Override
@@ -143,6 +145,23 @@ public class LoanServiceImpl implements LoanService {
         loan.setBorrowedAt(LocalDateTime.now());
 
         return loanRepository.save(loan);
+    }
+
+    private List<LoanDto> getAllLoansForAdmin() {
+
+        return loanRepository.findAll()
+                .stream()
+                .map(LoanMapper::toDto)
+                .toList();
+    }
+
+    private List<LoanDto> getAllActiveLoansForUser(String email) {
+
+        return loanRepository
+                .findAllByLibraryUserEmailAndReturnedAtIsNull(email)
+                .stream()
+                .map(LoanMapper::toDto)
+                .toList();
     }
 
     private LoanDto getLoanForAdmin(Long loanId) {

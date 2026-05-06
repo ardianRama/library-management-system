@@ -45,10 +45,9 @@ public class LoanController {
         );
     }
 
-    @IsAdmin
     @GetMapping
-    public List<LoanDto> getAllLoans() {
-        return loanService.getAllLoans();
+    public List<LoanDto> getAllLoans(@AuthenticationPrincipal User user) {
+        return loanService.getAllLoans(user.getUsername());
     }
 
     @GetMapping("/{loanId}")

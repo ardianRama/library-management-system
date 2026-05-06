@@ -10,7 +10,7 @@ public interface LoanService {
 
     LoanDto returnBook(String email, Long bookId);
 
-    List<LoanDto> getAllLoans();
+    List<LoanDto> getAllLoans(String email);
 
     LoanDto getLoanById(Long loanId, String email);
 }
