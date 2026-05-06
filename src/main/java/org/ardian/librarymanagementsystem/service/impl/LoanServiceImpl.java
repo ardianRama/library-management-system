@@ -101,7 +101,7 @@ public class LoanServiceImpl implements LoanService {
             return getLoanForAdmin(loanId);
         }
 
-        return getLoanForUser(user, loanId);
+        return getActiveLoanForUser(user, loanId);
     }
 
     private LibraryUser getUser(String email) {
@@ -171,7 +171,7 @@ public class LoanServiceImpl implements LoanService {
                 .orElseThrow(() -> new LoanNotFoundException(loanId));
     }
 
-    private LoanDto getLoanForUser(LibraryUser user, Long loanId) {
+    private LoanDto getActiveLoanForUser(LibraryUser user, Long loanId) {
 
         return loanRepository
                 .findByIdAndLibraryUserEmailAndReturnedAtIsNull(loanId, user.getEmail())
