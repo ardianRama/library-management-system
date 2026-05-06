@@ -5,7 +5,6 @@ import org.ardian.librarymanagementsystem.dto.BookRequest;
 import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.security.annotation.IsUser;
 import org.ardian.librarymanagementsystem.service.LoanService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
