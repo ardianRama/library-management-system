@@ -48,7 +48,7 @@ public class LoanServiceImpl implements LoanService {
         Book book = getBook(bookId);
 
         validateNotAlreadyBorrowed(user, bookId);
-        validateBookAvailability(book, email);
+        validateBookAvailability(book);
 
         book.setAvailableCopies(book.getAvailableCopies() - 1);
 
@@ -129,11 +129,8 @@ public class LoanServiceImpl implements LoanService {
         }
     }
 
-    private void validateBookAvailability(Book book, String email) {
+    private void validateBookAvailability(Book book) {
         if (book.getAvailableCopies() <= 0) {
-            log.warn("Attempt to borrow unavailable book. user={}, bookId={}",
-                    email, book.getId());
-
             throw new BookNotAvailableException(book.getId());
         }
     }
