@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         LibraryUser libraryUser = libraryUserRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Authentication failed - user not found: {}", email);
+                    log.debug("Authentication failed - user not found: {}", email);
                     return new UsernameNotFoundException("Invalid credentials");
                 });
 
