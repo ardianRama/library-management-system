@@ -2,14 +2,12 @@ package org.ardian.librarymanagementsystem.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Represent a detailed book in the database/library visible for the admin.
  */
 
 @Getter
-@Setter
 @Builder
 public class BookDetailedDto {
 
