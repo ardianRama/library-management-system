@@ -106,18 +106,18 @@ public class LoanServiceImpl implements LoanService {
 
     private LibraryUser getUser(String email) {
         return libraryUserRepository.findByEmail(email)
-                .orElseThrow(() -> new LibraryUserNotFoundException(email));
+                .orElseThrow(LibraryUserNotFoundException::new);
     }
 
     private Book getBook(Long bookId) {
         return bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
     }
 
     private Loan getActiveLoan(String email, Long bookId) {
         return loanRepository
                 .findByLibraryUserEmailAndBookIdAndReturnedAtIsNull(email, bookId)
-                .orElseThrow(() -> new LoanNotFoundException(bookId, email));
+                .orElseThrow(LoanNotFoundException::new);
     }
 
     private void validateNotAlreadyBorrowed(LibraryUser user, Long bookId) {
@@ -125,13 +125,13 @@ public class LoanServiceImpl implements LoanService {
                 .existsByLibraryUserIdAndBookIdAndReturnedAtIsNull(user.getId(), bookId);
 
         if (exists) {
-            throw new UserAlreadyBorrowedBookException(bookId);
+            throw new UserAlreadyBorrowedBookException();
         }
     }
 
     private void validateBookAvailability(Book book) {
         if (book.getAvailableCopies() <= 0) {
-            throw new BookNotAvailableException(book.getId());
+            throw new BookNotAvailableException();
         }
     }
 
@@ -165,7 +165,7 @@ public class LoanServiceImpl implements LoanService {
 
         return loanRepository.findById(loanId)
                 .map(LoanMapper::toDto)
-                .orElseThrow(() -> new LoanNotFoundException(loanId));
+                .orElseThrow(LoanNotFoundException::new);
     }
 
     private LoanDto getActiveLoanForUser(LibraryUser user, Long loanId) {
@@ -173,6 +173,6 @@ public class LoanServiceImpl implements LoanService {
         return loanRepository
                 .findByIdAndLibraryUserEmailAndReturnedAtIsNull(loanId, user.getEmail())
                 .map(LoanMapper::toDto)
-                .orElseThrow(() -> new LoanNotFoundException(loanId));
+                .orElseThrow(LoanNotFoundException::new);
     }
 }

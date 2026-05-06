@@ -64,7 +64,7 @@ public class BookServiceImpl implements BookService {
             log.warn("Attempt to add duplicate book. externalId={}",
                     dto.getExternalId());
 
-            throw new BookAlreadyExistsException(dto.getExternalId());
+            throw new BookAlreadyExistsException();
         }
 
         Book book = BookMapper.toEntity(dto, totalCopies);
@@ -84,7 +84,7 @@ public class BookServiceImpl implements BookService {
     public BookDetailedDto updateTotalCopies(Long bookId, int totalCopies) {
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
 
         int borrowed = book.getTotalCopies() - book.getAvailableCopies();
 
@@ -97,7 +97,7 @@ public class BookServiceImpl implements BookService {
                     borrowed
             );
 
-            throw new InvalidBookUpdateException(borrowed, totalCopies);
+            throw new InvalidBookUpdateException();
         }
 
         int oldTotalCopies = book.getTotalCopies();
@@ -121,7 +121,7 @@ public class BookServiceImpl implements BookService {
     public void deleteBook(Long bookId) {
 
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
 
         if (book.getAvailableCopies() < book.getTotalCopies()) {
 
@@ -132,7 +132,7 @@ public class BookServiceImpl implements BookService {
                     book.getAvailableCopies()
             );
 
-            throw new BookDeletionException(bookId);
+            throw new BookDeletionException();
         }
 
         bookRepository.delete(book);
@@ -156,7 +156,7 @@ public class BookServiceImpl implements BookService {
     public BookDetailedDto getDetailedBook(Long bookId) {
         return bookRepository.findById(bookId)
                 .map(BookMapper::toDetailedDto)
-                .orElseThrow(() -> new BookNotFoundException(bookId));
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @Override

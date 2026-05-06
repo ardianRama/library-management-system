@@ -38,7 +38,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
 
             log.warn("Attempt to register user with existing email: {}", dto.getEmail());
 
-            throw new UserAlreadyExistsException(dto.getEmail());
+            throw new UserAlreadyExistsException();
         }
 
         LibraryUser user = LibraryUserMapper.toEntity(dto, Role.USER);
@@ -64,14 +64,14 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     public LibraryUserDetailedDto getUserById(Long id) {
         return libraryUserRepository.findById(id)
                 .map(LibraryUserMapper::toDetailedDto)
-                .orElseThrow(() -> new LibraryUserNotFoundException(id));
+                .orElseThrow(LibraryUserNotFoundException::new);
     }
 
     @Override
     public void deleteLibraryUser(Long id) {
 
         LibraryUser user = libraryUserRepository.findById(id)
-                .orElseThrow(() -> new LibraryUserNotFoundException(id));
+                .orElseThrow(LibraryUserNotFoundException::new);
 
         boolean hasActiveLoans = user.getMyLoans()
                 .stream()
@@ -79,7 +79,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
 
         if (hasActiveLoans) {
             log.warn("Attempt to delete user with active loans. user id={}", id);
-            throw new UserHasActiveLoansException(id);
+            throw new UserHasActiveLoansException();
         }
 
         libraryUserRepository.delete(user);
