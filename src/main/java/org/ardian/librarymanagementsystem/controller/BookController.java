@@ -7,7 +7,9 @@ import org.ardian.librarymanagementsystem.security.annotation.IsUser;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @IsUser
@@ -33,7 +35,13 @@ public class BookController {
 
         BookDetailedDto saved = bookService.createBook(request.getBook(), request.getTotalCopies());
 
-        return ResponseEntity.ok(saved);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentContextPath()
+                .path("/books/detailed/{bookId}")
+                .buildAndExpand(saved.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).body(saved);
     }
 
     @IsAdmin
