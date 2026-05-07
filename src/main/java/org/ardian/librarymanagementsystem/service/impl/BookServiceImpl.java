@@ -78,24 +78,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDetailedDto updateTotalCopies(Long bookId, int totalCopies) {
 
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(BookNotFoundException::new);
+        Book book = findBookOrThrow(bookId);
 
-        int borrowed = book.getTotalCopies() - book.getAvailableCopies();
-
-        if (totalCopies < borrowed) {
-
-            log.info(
-                    "Rejected totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
-                    bookId,
-                    totalCopies,
-                    borrowed
-            );
-
-            throw new InvalidBookUpdateException();
-        }
+        validateTotalCopiesUpdate(book, totalCopies);
 
         int oldTotalCopies = book.getTotalCopies();
+        int borrowed = getBorrowedCopies(book);
 
         book.setTotalCopies(totalCopies);
         book.setAvailableCopies(totalCopies - borrowed);
@@ -115,8 +103,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteBook(Long bookId) {
 
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(BookNotFoundException::new);
+        Book book = findBookOrThrow(bookId);
 
         if (book.getAvailableCopies() < book.getTotalCopies()) {
 
@@ -174,5 +161,31 @@ public class BookServiceImpl implements BookService {
                 .stream()
                 .map(BookMapper::toLibraryDto)
                 .toList();
+    }
+
+    private Book findBookOrThrow(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(BookNotFoundException::new);
+    }
+
+    private void validateTotalCopiesUpdate(Book book, int totalCopies) {
+
+        int borrowed = getBorrowedCopies(book);
+
+        if (totalCopies < borrowed) {
+
+            log.info(
+                    "Rejected totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
+                    book.getId(),
+                    totalCopies,
+                    borrowed
+            );
+
+            throw new InvalidBookUpdateException();
+        }
+    }
+
+    private int getBorrowedCopies(Book book) {
+        return book.getTotalCopies() - book.getAvailableCopies();
     }
 }
