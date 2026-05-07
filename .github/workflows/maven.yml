@@ -49,9 +49,9 @@ jobs:
 
       - name: Build and test
         env:
-          DB_URL: jdbc:postgresql://postgres:5432/LibraryDB
-          DB_USER: postgres
-          DB_PASS: postgres
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/LibraryDB
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
           ADMIN_EMAIL: admin@test.com
           ADMIN_PASSWORD: password
         run: mvn -B clean verify
