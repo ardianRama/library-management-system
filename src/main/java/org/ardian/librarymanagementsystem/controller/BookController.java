@@ -12,7 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@IsUser
+@IsAdmin
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -23,13 +23,11 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @IsAdmin
     @GetMapping("/search/external")
     public List<BookDto> searchExternalBooks(@RequestParam String q) {
         return bookService.searchExternalBooks(q);
     }
 
-    @IsAdmin
     @PostMapping("/import")
     public ResponseEntity<BookDetailedDto> importBook(@Valid @RequestBody ImportBookRequest request) {
 
@@ -44,7 +42,6 @@ public class BookController {
         return ResponseEntity.created(location).body(saved);
     }
 
-    @IsAdmin
     @PatchMapping("/{bookId}/copies")
     public ResponseEntity<BookDetailedDto> updateCopies(
             @PathVariable Long bookId,
@@ -55,7 +52,6 @@ public class BookController {
         );
     }
 
-    @IsAdmin
     @DeleteMapping("/{bookId}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long bookId) {
 
@@ -64,23 +60,23 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-    @IsAdmin
     @GetMapping("/detailed")
     public List<BookDetailedDto> getAllDetailedBooks() {
         return bookService.getAllDetailedBooks();
     }
 
-    @IsAdmin
     @GetMapping("/detailed/{bookId}")
     public BookDetailedDto getDetailedBook(@PathVariable Long bookId) {
         return bookService.getDetailedBook(bookId);
     }
 
+    @IsUser
     @GetMapping("/search")
     public List<LibraryBookDto> searchLibraryBooks(@RequestParam String q) {
         return bookService.searchLibraryBooks(q);
     }
 
+    @IsUser
     @GetMapping
     public List<LibraryBookDto> getAllBooks() {
         return bookService.getAllBooks();
