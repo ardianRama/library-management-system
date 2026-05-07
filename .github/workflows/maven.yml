@@ -17,15 +17,12 @@ jobs:
     services:
       postgres:
         image: postgres:17
-
         env:
           POSTGRES_DB: LibraryDB
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-
         ports:
           - 5432:5432
-
         options: >-
           --health-cmd="pg_isready -U postgres -d LibraryDB"
           --health-interval=10s
@@ -44,16 +41,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Wait for PostgreSQL
-        run: sleep 5
-
       - name: Build and test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/LibraryDB
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
-          ADMIN_EMAIL: admin@test.com
-          ADMIN_PASSWORD: password
         run: mvn -B clean verify
 
       - name: Upload JAR artifact
