@@ -1,3 +1,8 @@
+# Test configuration for Spring Boot
+# Required for running integration tests with @SpringBootTest
+# Uses in-memory H2 database for fast and isolated test execution
+# Provides default admin credentials for DataInitializer
+
 spring:
   datasource:
     url: jdbc:h2:mem:testdb
