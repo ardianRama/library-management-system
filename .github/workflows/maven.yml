@@ -33,7 +33,7 @@ jobs:
           --health-retries=5
 
     env:
-      DB_URL: jdbc:postgresql://localhost:5432/LibraryDB
+      DB_URL: jdbc:postgresql://postgres:5432/LibraryDB
       DB_USER: postgres
       DB_PASS: postgres
 
@@ -48,6 +48,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
+
+      - name: Wait for PostgreSQL
+        run: sleep 5
 
       - name: Build and test with Maven
         run: mvn -B clean verify
