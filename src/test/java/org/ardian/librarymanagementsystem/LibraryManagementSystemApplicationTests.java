@@ -1,15 +1,13 @@
 package org.ardian.librarymanagementsystem;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-@Disabled("Disabled in CI since contextLoads requires full Spring Boot initialization with database, which is not available in current test configuration")
+@ActiveProfiles("test")
 @SpringBootTest
 class LibraryManagementSystemApplicationTests {
 
     @Test
-    void contextLoads() {
-    }
-
+    void contextLoads() {}
 }
