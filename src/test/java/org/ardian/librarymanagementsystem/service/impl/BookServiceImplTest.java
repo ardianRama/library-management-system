@@ -140,13 +140,11 @@ class BookServiceImplTest {
 
         BookDetailedDto result = bookService.updateTotalCopies(BOOK_ID, UPDATED_TOTAL_COPIES);
 
-        int borrowedCopies = TOTAL_COPIES - AVAILABLE_COPIES_AFTER_LOAN;
-        int expectedAvailableCopies = UPDATED_TOTAL_COPIES - borrowedCopies;
         verify(bookRepository).findById(BOOK_ID);
         assertThat(bookWithLoans.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
-        assertThat(bookWithLoans.getAvailableCopies()).isEqualTo(expectedAvailableCopies);
+        assertThat(bookWithLoans.getAvailableCopies()).isEqualTo(7);
         assertThat(result.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
-        assertThat(result.getAvailableCopies()).isEqualTo(expectedAvailableCopies);
+        assertThat(result.getAvailableCopies()).isEqualTo(7);
     }
 
     @Test
