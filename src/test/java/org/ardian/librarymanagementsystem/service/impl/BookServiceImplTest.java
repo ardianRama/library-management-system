@@ -134,6 +134,7 @@ class BookServiceImplTest {
 
     @Test
     void shouldUpdateTotalCopiesSuccessfully() {
+        int borrowed = TOTAL_COPIES - AVAILABLE_COPIES_AFTER_LOAN;
         Book bookWithLoans = buildBook(dto, BOOK_ID, TOTAL_COPIES, AVAILABLE_COPIES_AFTER_LOAN);
         when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(bookWithLoans));
         when(bookRepository.save(any(Book.class))).thenReturn(bookWithLoans);
@@ -142,9 +143,9 @@ class BookServiceImplTest {
 
         verify(bookRepository).findById(BOOK_ID);
         assertThat(bookWithLoans.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
-        assertThat(bookWithLoans.getAvailableCopies()).isEqualTo(7);
+        assertThat(bookWithLoans.getAvailableCopies()).isEqualTo(UPDATED_TOTAL_COPIES - borrowed);
         assertThat(result.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
-        assertThat(result.getAvailableCopies()).isEqualTo(7);
+        assertThat(result.getAvailableCopies()).isEqualTo(UPDATED_TOTAL_COPIES - borrowed);
     }
 
     @Test
@@ -188,6 +189,44 @@ class BookServiceImplTest {
                 .isInstanceOf(BookDeletionException.class);
 
         verify(bookRepository, never()).delete(any(Book.class));
+    }
+
+    @Test
+    void shouldReturnAllDetailedBooks() {
+        when(bookRepository.findAll()).thenReturn(List.of(book));
+
+        List<BookDetailedDto> result = bookService.getAllDetailedBooks();
+
+        assertThat(result).hasSize(1);
+        verify(bookRepository).findAll();
+    }
+
+    @Test
+    void shouldReturnDetailedBook() {
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(book));
+
+        BookDetailedDto result = bookService.getDetailedBook(BOOK_ID);
+
+        assertThat(result.getId()).isEqualTo(BOOK_ID);
+        verify(bookRepository).findById(BOOK_ID);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDetailedBookNotFound() {
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookService.getDetailedBook(BOOK_ID))
+                .isInstanceOf(BookNotFoundException.class);
+    }
+
+    @Test
+    void shouldReturnAllBooks() {
+        when(bookRepository.findAll()).thenReturn(List.of(book));
+
+        List<LibraryBookDto> result = bookService.getAllBooks();
+
+        assertThat(result).hasSize(1);
+        verify(bookRepository).findAll();
     }
 
     private Book buildAvailableBook(BookDto dto, Long id, int totalCopies) {
