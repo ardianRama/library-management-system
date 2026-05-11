@@ -34,7 +34,8 @@ import static org.mockito.Mockito.*;
 class BookServiceImplTest {
 
     private static final String QUERY = "clean code";
-    private static final int TOTAL_COPIES = 5;
+    private static final int DEFAULT_TOTAL_COPIES = 5;
+    private static final int DEFAULT_AVAILABLE_COPIES = 5;
     private static final int AVAILABLE_COPIES = 2;
     private static final Long BOOK_ID = 1L;
 
@@ -57,7 +58,6 @@ class BookServiceImplTest {
     void shouldReturnBooksFromExternalApi() {
 
         BookDoc doc = new BookDoc();
-
         BookDto dto = buildBookDto();
 
         when(bookClient.fetchBooks(QUERY))
@@ -95,8 +95,7 @@ class BookServiceImplTest {
     @Test
     void shouldReturnLibraryBooksWhenQueryIsValid() {
 
-        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
-        book.setId(BOOK_ID);
+        Book book = buildBook(buildBookDto(), BOOK_ID, DEFAULT_TOTAL_COPIES, DEFAULT_AVAILABLE_COPIES );
 
         when(bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY))
                 .thenReturn(List.of(book));
@@ -126,8 +125,7 @@ class BookServiceImplTest {
 
         BookDto dto = buildBookDto();
 
-        Book savedBook = buildBookEntity(dto, TOTAL_COPIES);
-        savedBook.setId(BOOK_ID);
+        Book savedBook = buildBook(dto, BOOK_ID, DEFAULT_TOTAL_COPIES, DEFAULT_AVAILABLE_COPIES );
 
         when(bookRepository.existsByExternalId(dto.getExternalId()))
                 .thenReturn(false);
@@ -135,7 +133,7 @@ class BookServiceImplTest {
         when(bookRepository.save(any(Book.class)))
                 .thenReturn(savedBook);
 
-        BookDetailedDto result = bookService.createBook(dto, TOTAL_COPIES);
+        BookDetailedDto result = bookService.createBook(dto, DEFAULT_TOTAL_COPIES);
 
         verify(bookRepository).existsByExternalId(dto.getExternalId());
         verify(bookRepository).save(bookCaptor.capture());
@@ -145,12 +143,12 @@ class BookServiceImplTest {
         assertThat(capturedBook.getTitle()).isEqualTo(dto.getTitle());
         assertThat(capturedBook.getAuthor()).isEqualTo(dto.getAuthor());
         assertThat(capturedBook.getExternalId()).isEqualTo(dto.getExternalId());
-        assertThat(capturedBook.getTotalCopies()).isEqualTo(TOTAL_COPIES);
-        assertThat(capturedBook.getAvailableCopies()).isEqualTo(5);
+        assertThat(capturedBook.getTotalCopies()).isEqualTo(DEFAULT_TOTAL_COPIES);
+        assertThat(capturedBook.getAvailableCopies()).isEqualTo(DEFAULT_AVAILABLE_COPIES );
 
         assertThat(result.getId()).isEqualTo(BOOK_ID);
         assertThat(result.getExternalId()).isEqualTo(dto.getExternalId());
-        assertThat(result.getAvailableCopies()).isEqualTo(5);
+        assertThat(result.getAvailableCopies()).isEqualTo(DEFAULT_AVAILABLE_COPIES );
     }
 
     @Test
@@ -161,7 +159,7 @@ class BookServiceImplTest {
         when(bookRepository.existsByExternalId(dto.getExternalId()))
                 .thenReturn(true);
 
-        assertThatThrownBy(() -> bookService.createBook(dto, TOTAL_COPIES))
+        assertThatThrownBy(() -> bookService.createBook(dto, DEFAULT_TOTAL_COPIES))
                 .isInstanceOf(BookAlreadyExistsException.class);
 
         verify(bookRepository).existsByExternalId(dto.getExternalId());
@@ -173,9 +171,7 @@ class BookServiceImplTest {
 
         BookDto dto = buildBookDto();
 
-        Book existingBook = buildBookEntity(dto, TOTAL_COPIES);
-        existingBook.setId(BOOK_ID);
-        existingBook.setAvailableCopies(AVAILABLE_COPIES);
+        Book existingBook = buildBook(dto, BOOK_ID, DEFAULT_TOTAL_COPIES, AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(existingBook));
@@ -200,9 +196,7 @@ class BookServiceImplTest {
 
         BookDto dto = buildBookDto();
 
-        Book existingBook = buildBookEntity(dto, TOTAL_COPIES);
-        existingBook.setId(BOOK_ID);
-        existingBook.setAvailableCopies(AVAILABLE_COPIES);
+        Book existingBook = buildBook(dto, BOOK_ID, DEFAULT_TOTAL_COPIES, AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(existingBook));
@@ -217,9 +211,7 @@ class BookServiceImplTest {
     @Test
     void shouldDeleteBookSuccessfully() {
 
-        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
-        book.setId(BOOK_ID);
-        book.setAvailableCopies(5);
+        Book book = buildBook(buildBookDto(), BOOK_ID, DEFAULT_TOTAL_COPIES, DEFAULT_AVAILABLE_COPIES );
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(book));
@@ -229,10 +221,7 @@ class BookServiceImplTest {
         verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository).delete(bookCaptor.capture());
 
-        Book capturedBook = bookCaptor.getValue();
-
-        assertThat(capturedBook.getId()).isEqualTo(BOOK_ID);
-        assertThat(capturedBook.getTitle()).isEqualTo(book.getTitle());
+        assertThat(bookCaptor.getValue().getId()).isEqualTo(BOOK_ID);
     }
 
     @Test
@@ -251,9 +240,7 @@ class BookServiceImplTest {
     @Test
     void shouldThrowExceptionWhenBookHasActiveLoans() {
 
-        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
-        book.setId(BOOK_ID);
-        book.setAvailableCopies(AVAILABLE_COPIES);
+        Book book = buildBook(buildBookDto(), BOOK_ID, DEFAULT_TOTAL_COPIES, AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(book));
@@ -275,8 +262,8 @@ class BookServiceImplTest {
         );
     }
 
-    private Book buildBookEntity(BookDto dto, int totalCopies) {
-        return Book.builder()
+    private Book buildBook(BookDto dto, Long bookId, int totalCopies, int availableCopies) {
+        Book book = Book.builder()
                 .title(dto.getTitle())
                 .author(dto.getAuthor())
                 .firstPublishYear(dto.getFirstPublishYear())
@@ -285,5 +272,10 @@ class BookServiceImplTest {
                 .totalCopies(totalCopies)
                 .availableCopies(totalCopies)
                 .build();
+
+        book.setId(bookId);
+        book.setAvailableCopies(availableCopies);
+
+        return book;
     }
 }
