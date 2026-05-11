@@ -35,9 +35,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     public void registerUser(LibraryUserDto dto) {
 
         if (libraryUserRepository.existsByEmail(dto.getEmail())) {
-
             log.info("Attempt to register user with existing email: {}", dto.getEmail());
-
             throw new UserAlreadyExistsException();
         }
 

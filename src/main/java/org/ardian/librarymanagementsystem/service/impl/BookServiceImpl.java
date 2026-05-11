@@ -58,10 +58,7 @@ public class BookServiceImpl implements BookService {
     public BookDetailedDto createBook(BookDto dto, int totalCopies) {
 
         if (bookRepository.existsByExternalId(dto.getExternalId())) {
-
-            log.info("Attempt to add duplicate book. externalId={}",
-                    dto.getExternalId());
-
+            log.info("Attempt to add duplicate book. externalId={}", dto.getExternalId());
             throw new BookAlreadyExistsException();
         }
 
@@ -106,24 +103,18 @@ public class BookServiceImpl implements BookService {
         Book book = findBookOrThrow(bookId);
 
         if (book.getAvailableCopies() < book.getTotalCopies()) {
-
             log.warn(
                     "Attempt to delete book with active loans. bookId={}, totalCopies={}, availableCopies={}",
                     bookId,
                     book.getTotalCopies(),
                     book.getAvailableCopies()
             );
-
             throw new BookDeletionException();
         }
 
         bookRepository.delete(book);
 
-        log.info(
-                "Book deleted successfully. bookId={}, title={}",
-                book.getId(),
-                book.getTitle()
-        );
+        log.info("Book deleted successfully. bookId={}, title={}", book.getId(), book.getTitle());
     }
 
     @Override
@@ -173,14 +164,12 @@ public class BookServiceImpl implements BookService {
         int borrowed = getBorrowedCopies(book);
 
         if (totalCopies < borrowed) {
-
             log.info(
                     "Rejected totalCopies update. bookId={}, requestedTotalCopies={}, borrowed={}",
                     book.getId(),
                     totalCopies,
                     borrowed
             );
-
             throw new InvalidBookUpdateException();
         }
     }

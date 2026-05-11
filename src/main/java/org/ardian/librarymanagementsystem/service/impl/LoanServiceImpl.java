@@ -145,7 +145,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private List<LoanDto> getAllLoansForAdmin() {
-
         return loanRepository.findAll()
                 .stream()
                 .map(LoanMapper::toDto)
@@ -153,7 +152,6 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private List<LoanDto> getAllActiveLoansForUser(String email) {
-
         return loanRepository
                 .findAllByLibraryUserEmailAndReturnedAtIsNull(email)
                 .stream()
@@ -162,14 +160,12 @@ public class LoanServiceImpl implements LoanService {
     }
 
     private LoanDto getLoanForAdmin(Long loanId) {
-
         return loanRepository.findById(loanId)
                 .map(LoanMapper::toDto)
                 .orElseThrow(LoanNotFoundException::new);
     }
 
     private LoanDto getActiveLoanForUser(LibraryUser user, Long loanId) {
-
         return loanRepository
                 .findByIdAndLibraryUserEmailAndReturnedAtIsNull(loanId, user.getEmail())
                 .map(LoanMapper::toDto)
