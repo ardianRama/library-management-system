@@ -5,6 +5,7 @@ import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.dto.BookDto;
+import org.ardian.librarymanagementsystem.dto.LibraryBookDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookAlreadyExistsException;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookDeletionException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
@@ -32,6 +33,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
 
+    private static final String QUERY = "clean code";
     private static final int TOTAL_COPIES = 5;
     private static final int AVAILABLE_COPIES = 2;
     private static final Long BOOK_ID = 1L;
@@ -54,13 +56,11 @@ class BookServiceImplTest {
     @Test
     void shouldReturnBooksFromExternalApi() {
 
-        String query = "clean code";
-
         BookDoc doc = new BookDoc();
 
         BookDto dto = buildBookDto();
 
-        when(bookClient.fetchBooks(query))
+        when(bookClient.fetchBooks(QUERY))
                 .thenReturn(List.of(doc));
 
         try (MockedStatic<OpenLibraryMapper> mapper =
@@ -70,18 +70,18 @@ class BookServiceImplTest {
                             OpenLibraryMapper.bookDocToBookDto(doc, properties))
                     .thenReturn(dto);
 
-            List<BookDto> result = bookService.searchExternalBooks(query);
+            List<BookDto> result = bookService.searchExternalBooks(QUERY);
 
             assertThat(result).hasSize(1);
             assertThat(result.getFirst().getTitle())
                     .isEqualTo(dto.getTitle());
 
-            verify(bookClient).fetchBooks(query);
+            verify(bookClient).fetchBooks(QUERY);
         }
     }
 
     @Test
-    void shouldThrowExceptionWhenQueryIsInvalid() {
+    void shouldThrowExceptionWhenExternalQueryIsInvalid() {
 
         assertThatThrownBy(() -> bookService.searchExternalBooks(""))
                 .isInstanceOf(InvalidSearchException.class);
@@ -90,6 +90,35 @@ class BookServiceImplTest {
                 .isInstanceOf(InvalidSearchException.class);
 
         verifyNoInteractions(bookClient);
+    }
+
+    @Test
+    void shouldReturnLibraryBooksWhenQueryIsValid() {
+
+        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
+        book.setId(BOOK_ID);
+
+        when(bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY))
+                .thenReturn(List.of(book));
+
+        List<LibraryBookDto> result = bookService.searchLibraryBooks(QUERY);
+
+        verify(bookRepository)
+                .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenLibraryQueryIsInvalid() {
+
+        assertThatThrownBy(() -> bookService.searchLibraryBooks(""))
+                .isInstanceOf(InvalidSearchException.class);
+
+        assertThatThrownBy(() -> bookService.searchLibraryBooks(null))
+                .isInstanceOf(InvalidSearchException.class);
+
+        verifyNoInteractions(bookRepository);
     }
 
     @Test
