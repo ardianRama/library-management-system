@@ -45,20 +45,11 @@ class BookServiceImplTest {
     @Test
     void shouldCreateBookSuccessfully() {
 
-        BookDto dto = createBookDto();
+        BookDto dto = buildBookDto();
 
         int totalCopies = 5;
 
-        Book savedBook = Book.builder()
-                .title(dto.getTitle())
-                .author(dto.getAuthor())
-                .firstPublishYear(dto.getFirstPublishYear())
-                .coverUrl(dto.getCoverUrl())
-                .externalId(dto.getExternalId())
-                .totalCopies(totalCopies)
-                .availableCopies(totalCopies)
-                .build();
-
+        Book savedBook = buildBookEntity(dto, totalCopies);
         savedBook.setId(1L);
 
         when(bookRepository.existsByExternalId(dto.getExternalId()))
@@ -89,7 +80,7 @@ class BookServiceImplTest {
     @Test
     void shouldThrowExceptionWhenBookAlreadyExists() {
 
-        BookDto dto = createBookDto();
+        BookDto dto = buildBookDto();
 
         when(bookRepository.existsByExternalId(dto.getExternalId()))
                 .thenReturn(true);
@@ -100,7 +91,7 @@ class BookServiceImplTest {
         verify(bookRepository, never()).save(any(Book.class));
     }
 
-    private BookDto createBookDto() {
+    private BookDto buildBookDto() {
         return new BookDto(
                 "Clean Code",
                 "Robert C. Martin",
@@ -108,5 +99,17 @@ class BookServiceImplTest {
                 "cover-url",
                 "OL123"
         );
+    }
+
+    private Book buildBookEntity(BookDto dto, int totalCopies) {
+        return Book.builder()
+                .title(dto.getTitle())
+                .author(dto.getAuthor())
+                .firstPublishYear(dto.getFirstPublishYear())
+                .coverUrl(dto.getCoverUrl())
+                .externalId(dto.getExternalId())
+                .totalCopies(totalCopies)
+                .availableCopies(totalCopies)
+                .build();
     }
 }
