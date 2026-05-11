@@ -173,7 +173,7 @@ class BookServiceImplTest {
 
         BookDto dto = buildBookDto();
 
-        Book existingBook = buildBookEntity(dto, 5);
+        Book existingBook = buildBookEntity(dto, TOTAL_COPIES);
         existingBook.setId(BOOK_ID);
         existingBook.setAvailableCopies(AVAILABLE_COPIES);
 
@@ -200,7 +200,7 @@ class BookServiceImplTest {
 
         BookDto dto = buildBookDto();
 
-        Book existingBook = buildBookEntity(dto, 5);
+        Book existingBook = buildBookEntity(dto, TOTAL_COPIES);
         existingBook.setId(BOOK_ID);
         existingBook.setAvailableCopies(AVAILABLE_COPIES);
 
@@ -227,7 +227,12 @@ class BookServiceImplTest {
         bookService.deleteBook(BOOK_ID);
 
         verify(bookRepository).findById(BOOK_ID);
-        verify(bookRepository).delete(book);
+        verify(bookRepository).delete(bookCaptor.capture());
+
+        Book capturedBook = bookCaptor.getValue();
+
+        assertThat(capturedBook.getId()).isEqualTo(BOOK_ID);
+        assertThat(capturedBook.getTitle()).isEqualTo(book.getTitle());
     }
 
     @Test
