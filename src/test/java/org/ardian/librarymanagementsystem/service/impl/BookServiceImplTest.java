@@ -3,37 +3,37 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.client.BookClient;
 import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
+import org.ardian.librarymanagementsystem.dto.BookDoc;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookAlreadyExistsException;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookDeletionException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.validation.InvalidBookUpdateException;
+import org.ardian.librarymanagementsystem.exception.validation.InvalidSearchException;
+import org.ardian.librarymanagementsystem.mapper.external.OpenLibraryMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.repository.BookRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
 
     private static final int TOTAL_COPIES = 5;
+    private static final int AVAILABLE_COPIES = 2;
     private static final Long BOOK_ID = 1L;
 
     @Mock
@@ -50,6 +50,47 @@ class BookServiceImplTest {
 
     @Captor
     private ArgumentCaptor<Book> bookCaptor;
+
+    @Test
+    void shouldReturnBooksFromExternalApi() {
+
+        String query = "clean code";
+
+        BookDoc doc = new BookDoc();
+
+        BookDto dto = buildBookDto();
+
+        when(bookClient.fetchBooks(query))
+                .thenReturn(List.of(doc));
+
+        try (MockedStatic<OpenLibraryMapper> mapper =
+                     mockStatic(OpenLibraryMapper.class)) {
+
+            mapper.when(() ->
+                            OpenLibraryMapper.bookDocToBookDto(doc, properties))
+                    .thenReturn(dto);
+
+            List<BookDto> result = bookService.searchExternalBooks(query);
+
+            assertThat(result).hasSize(1);
+            assertThat(result.getFirst().getTitle())
+                    .isEqualTo(dto.getTitle());
+
+            verify(bookClient).fetchBooks(query);
+        }
+    }
+
+    @Test
+    void shouldThrowExceptionWhenQueryIsInvalid() {
+
+        assertThatThrownBy(() -> bookService.searchExternalBooks(""))
+                .isInstanceOf(InvalidSearchException.class);
+
+        assertThatThrownBy(() -> bookService.searchExternalBooks(null))
+                .isInstanceOf(InvalidSearchException.class);
+
+        verifyNoInteractions(bookClient);
+    }
 
     @Test
     void shouldCreateBookSuccessfully() {
@@ -105,7 +146,7 @@ class BookServiceImplTest {
 
         Book existingBook = buildBookEntity(dto, 5);
         existingBook.setId(BOOK_ID);
-        existingBook.setAvailableCopies(2);
+        existingBook.setAvailableCopies(AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(existingBook));
@@ -126,13 +167,13 @@ class BookServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenTotalCopiesIsLessThanBorrowedCopies() {
+    void shouldThrowExceptionIfTotalCopiesIsLessThanAvailableCopies() {
 
         BookDto dto = buildBookDto();
 
         Book existingBook = buildBookEntity(dto, 5);
         existingBook.setId(BOOK_ID);
-        existingBook.setAvailableCopies(2);
+        existingBook.setAvailableCopies(AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(existingBook));
@@ -178,7 +219,7 @@ class BookServiceImplTest {
 
         Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
         book.setId(BOOK_ID);
-        book.setAvailableCopies(3);
+        book.setAvailableCopies(AVAILABLE_COPIES);
 
         when(bookRepository.findById(BOOK_ID))
                 .thenReturn(Optional.of(book));
