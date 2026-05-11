@@ -15,9 +15,12 @@ import org.ardian.librarymanagementsystem.mapper.external.OpenLibraryMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.repository.BookRepository;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,237 +37,158 @@ import static org.mockito.Mockito.*;
 class BookServiceImplTest {
 
     private static final String QUERY = "clean code";
-
-    private static final int INITIAL_TOTAL_COPIES = 5;
-    private static final int INITIAL_AVAILABLE_COPIES = 5;
-    private static final int AVAILABLE_COPIES = 2;
-
     private static final Long BOOK_ID = 1L;
+    private static final int TOTAL_COPIES = 5;
+    private static final int AVAILABLE_COPIES = 2;
+    private static final int UPDATED_TOTAL_COPIES = 10;
 
-    @Mock
-    private BookRepository bookRepository;
+    @Mock private BookRepository bookRepository;
+    @Mock private BookClient bookClient;
+    @Mock private OpenLibraryProperties properties;
+    @InjectMocks private BookServiceImpl bookService;
+    @Captor private ArgumentCaptor<Book> bookCaptor;
 
-    @Mock
-    private BookClient bookClient;
+    private BookDto dto;
+    private Book book;
 
-    @Mock
-    private OpenLibraryProperties properties;
-
-    @InjectMocks
-    private BookServiceImpl bookService;
-
-    @Captor
-    private ArgumentCaptor<Book> bookCaptor;
+    @BeforeEach
+    void setUp() {
+        dto = new BookDto("Clean Code", "Robert C. Martin", 2008, "cover-url", "OL123");
+        book = buildAvailableBook(dto, BOOK_ID, TOTAL_COPIES);
+    }
 
     @Test
     void shouldReturnBooksFromExternalApi() {
-
         BookDoc doc = new BookDoc();
-        BookDto dto = buildBookDto();
 
-        when(bookClient.fetchBooks(QUERY))
-                .thenReturn(List.of(doc));
+        when(bookClient.fetchBooks(QUERY)).thenReturn(List.of(doc));
 
-        try (MockedStatic<OpenLibraryMapper> mapper =
-                     mockStatic(OpenLibraryMapper.class)) {
-
-            mapper.when(() ->
-                            OpenLibraryMapper.bookDocToBookDto(doc, properties))
-                    .thenReturn(dto);
+        try (MockedStatic<OpenLibraryMapper> mapper = mockStatic(OpenLibraryMapper.class)) {
+            mapper.when(() -> OpenLibraryMapper.bookDocToBookDto(doc, properties)).thenReturn(dto);
 
             List<BookDto> result = bookService.searchExternalBooks(QUERY);
 
             assertThat(result).hasSize(1);
-            assertThat(result.getFirst().getTitle())
-                    .isEqualTo(dto.getTitle());
-
+            assertThat(result.getFirst().getTitle()).isEqualTo(dto.getTitle());
             verify(bookClient).fetchBooks(QUERY);
         }
     }
 
-    @Test
-    void shouldThrowExceptionWhenExternalQueryIsInvalid() {
-
-        assertThatThrownBy(() -> bookService.searchExternalBooks(""))
+    @ParameterizedTest
+    @NullAndEmptySource
+    void shouldThrowExceptionWhenExternalQueryIsInvalid(String query) {
+        assertThatThrownBy(() -> bookService.searchExternalBooks(query))
                 .isInstanceOf(InvalidSearchException.class);
-
-        assertThatThrownBy(() -> bookService.searchExternalBooks(null))
-                .isInstanceOf(InvalidSearchException.class);
-
         verifyNoInteractions(bookClient);
     }
 
     @Test
     void shouldReturnLibraryBooksWhenQueryIsValid() {
-
-        Book book = buildBook(buildBookDto(), BOOK_ID, INITIAL_TOTAL_COPIES, INITIAL_AVAILABLE_COPIES);
-
         when(bookRepository.findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY))
                 .thenReturn(List.of(book));
 
         List<LibraryBookDto> result = bookService.searchLibraryBooks(QUERY);
 
-        verify(bookRepository)
-                .findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY);
-
         assertThat(result).hasSize(1);
+        verify(bookRepository).findByTitleContainingIgnoreCaseOrAuthorContainingIgnoreCase(QUERY, QUERY);
     }
 
-    @Test
-    void shouldThrowExceptionWhenLibraryQueryIsInvalid() {
-
-        assertThatThrownBy(() -> bookService.searchLibraryBooks(""))
+    @ParameterizedTest
+    @NullAndEmptySource
+    void shouldThrowExceptionWhenLibraryQueryIsInvalid(String query) {
+        assertThatThrownBy(() -> bookService.searchLibraryBooks(query))
                 .isInstanceOf(InvalidSearchException.class);
-
-        assertThatThrownBy(() -> bookService.searchLibraryBooks(null))
-                .isInstanceOf(InvalidSearchException.class);
-
         verifyNoInteractions(bookRepository);
     }
 
     @Test
     void shouldCreateBookSuccessfully() {
+        when(bookRepository.existsByExternalId(dto.getExternalId())).thenReturn(false);
+        when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-        BookDto dto = buildBookDto();
+        BookDetailedDto result = bookService.createBook(dto, TOTAL_COPIES);
 
-        Book savedBook = buildBook(dto, BOOK_ID, INITIAL_TOTAL_COPIES, INITIAL_AVAILABLE_COPIES);
-
-        when(bookRepository.existsByExternalId(dto.getExternalId()))
-                .thenReturn(false);
-
-        when(bookRepository.save(any(Book.class)))
-                .thenReturn(savedBook);
-
-        BookDetailedDto result = bookService.createBook(dto, INITIAL_TOTAL_COPIES);
-
-        verify(bookRepository).existsByExternalId(dto.getExternalId());
         verify(bookRepository).save(bookCaptor.capture());
+        Book captured = bookCaptor.getValue();
 
-        Book capturedBook = bookCaptor.getValue();
-
-        assertThat(capturedBook.getTitle()).isEqualTo(dto.getTitle());
-        assertThat(capturedBook.getAuthor()).isEqualTo(dto.getAuthor());
-        assertThat(capturedBook.getExternalId()).isEqualTo(dto.getExternalId());
-        assertThat(capturedBook.getTotalCopies()).isEqualTo(INITIAL_TOTAL_COPIES);
-        assertThat(capturedBook.getAvailableCopies()).isEqualTo(INITIAL_AVAILABLE_COPIES);
-
+        assertThat(captured.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(captured.getAuthor()).isEqualTo(dto.getAuthor());
+        assertThat(captured.getTotalCopies()).isEqualTo(TOTAL_COPIES);
+        assertThat(captured.getAvailableCopies()).isEqualTo(TOTAL_COPIES);
         assertThat(result.getId()).isEqualTo(BOOK_ID);
-        assertThat(result.getExternalId()).isEqualTo(dto.getExternalId());
-        assertThat(result.getAvailableCopies()).isEqualTo(INITIAL_AVAILABLE_COPIES);
     }
 
     @Test
     void shouldThrowExceptionWhenBookAlreadyExists() {
+        when(bookRepository.existsByExternalId(dto.getExternalId())).thenReturn(true);
 
-        BookDto dto = buildBookDto();
-
-        when(bookRepository.existsByExternalId(dto.getExternalId()))
-                .thenReturn(true);
-
-        assertThatThrownBy(() -> bookService.createBook(dto, INITIAL_TOTAL_COPIES))
+        assertThatThrownBy(() -> bookService.createBook(dto, TOTAL_COPIES))
                 .isInstanceOf(BookAlreadyExistsException.class);
 
-        verify(bookRepository).existsByExternalId(dto.getExternalId());
         verify(bookRepository, never()).save(any(Book.class));
     }
 
     @Test
     void shouldUpdateTotalCopiesSuccessfully() {
+        int borrowed = TOTAL_COPIES - AVAILABLE_COPIES;
+        Book bookWithLoans = buildBook(dto, BOOK_ID, TOTAL_COPIES, AVAILABLE_COPIES);
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(bookWithLoans));
+        when(bookRepository.save(any(Book.class))).thenReturn(bookWithLoans);
 
-        BookDto dto = buildBookDto();
+        BookDetailedDto result = bookService.updateTotalCopies(BOOK_ID, UPDATED_TOTAL_COPIES);
 
-        Book existingBook = buildBook(dto, BOOK_ID, INITIAL_TOTAL_COPIES, AVAILABLE_COPIES);
-
-        when(bookRepository.findById(BOOK_ID))
-                .thenReturn(Optional.of(existingBook));
-
-        when(bookRepository.save(any(Book.class)))
-                .thenReturn(existingBook);
-
-        BookDetailedDto result = bookService.updateTotalCopies(BOOK_ID, 10);
-
-        verify(bookRepository).findById(BOOK_ID);
-        verify(bookRepository).save(any(Book.class));
-
-        assertThat(existingBook.getTotalCopies()).isEqualTo(10);
-        assertThat(existingBook.getAvailableCopies()).isEqualTo(7);
-
-        assertThat(result.getTotalCopies()).isEqualTo(10);
-        assertThat(result.getAvailableCopies()).isEqualTo(7);
+        assertThat(bookWithLoans.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
+        assertThat(bookWithLoans.getAvailableCopies()).isEqualTo(UPDATED_TOTAL_COPIES - borrowed);
+        assertThat(result.getTotalCopies()).isEqualTo(UPDATED_TOTAL_COPIES);
     }
 
     @Test
-    void shouldThrowExceptionIfTotalCopiesIsLessThanAvailableCopies() {
-
-        BookDto dto = buildBookDto();
-
-        Book existingBook = buildBook(dto, BOOK_ID, INITIAL_TOTAL_COPIES, AVAILABLE_COPIES);
-
-        when(bookRepository.findById(BOOK_ID))
-                .thenReturn(Optional.of(existingBook));
+    void shouldThrowExceptionIfTotalCopiesIsLessThanBorrowedCopies() {
+        Book bookWithLoans = buildBook(dto, BOOK_ID, TOTAL_COPIES, AVAILABLE_COPIES);
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(bookWithLoans));
 
         assertThatThrownBy(() -> bookService.updateTotalCopies(BOOK_ID, 2))
                 .isInstanceOf(InvalidBookUpdateException.class);
 
-        verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository, never()).save(any(Book.class));
     }
 
     @Test
     void shouldDeleteBookSuccessfully() {
-
-        Book book = buildBook(buildBookDto(), BOOK_ID, INITIAL_TOTAL_COPIES, INITIAL_AVAILABLE_COPIES);
-
-        when(bookRepository.findById(BOOK_ID))
-                .thenReturn(Optional.of(book));
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(book));
 
         bookService.deleteBook(BOOK_ID);
 
-        verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository).delete(bookCaptor.capture());
-
         assertThat(bookCaptor.getValue().getId()).isEqualTo(BOOK_ID);
     }
 
     @Test
     void shouldThrowExceptionWhenBookNotFound() {
-
-        when(bookRepository.findById(BOOK_ID))
-                .thenReturn(Optional.empty());
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> bookService.deleteBook(BOOK_ID))
                 .isInstanceOf(BookNotFoundException.class);
 
-        verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository, never()).delete(any(Book.class));
     }
 
     @Test
     void shouldThrowExceptionWhenBookHasActiveLoans() {
-
-        Book book = buildBook(buildBookDto(), BOOK_ID, INITIAL_TOTAL_COPIES, AVAILABLE_COPIES);
-
-        when(bookRepository.findById(BOOK_ID))
-                .thenReturn(Optional.of(book));
+        Book bookWithLoans = buildBook(dto, BOOK_ID, TOTAL_COPIES, AVAILABLE_COPIES);
+        when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(bookWithLoans));
 
         assertThatThrownBy(() -> bookService.deleteBook(BOOK_ID))
                 .isInstanceOf(BookDeletionException.class);
 
-        verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository, never()).delete(any(Book.class));
     }
 
-    private BookDto buildBookDto() {
-        return new BookDto(
-                "Clean Code",
-                "Robert C. Martin",
-                2008,
-                "cover-url",
-                "OL123"
-        );
+    private Book buildAvailableBook(BookDto dto, Long id, int totalCopies) {
+        return buildBook(dto, id, totalCopies, totalCopies);
     }
 
-    private Book buildBook(BookDto dto, Long bookId, int totalCopies, int availableCopies) {
+    private Book buildBook(BookDto dto, Long id, int totalCopies, int availableCopies) {
         Book book = Book.builder()
                 .title(dto.getTitle())
                 .author(dto.getAuthor())
@@ -272,12 +196,9 @@ class BookServiceImplTest {
                 .coverUrl(dto.getCoverUrl())
                 .externalId(dto.getExternalId())
                 .totalCopies(totalCopies)
-                .availableCopies(totalCopies)
+                .availableCopies(availableCopies)
                 .build();
-
-        book.setId(bookId);
-        book.setAvailableCopies(availableCopies);
-
+        book.setId(id);
         return book;
     }
 }
