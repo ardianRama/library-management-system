@@ -5,8 +5,10 @@ import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.validation.InvalidBookUpdateException;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.repository.BookRepository;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -15,6 +17,8 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -28,6 +32,7 @@ import static org.mockito.Mockito.when;
 class BookServiceImplTest {
 
     private static final int TOTAL_COPIES = 5;
+    private static final Long BOOK_ID = 1L;
 
     @Mock
     private BookRepository bookRepository;
@@ -50,7 +55,7 @@ class BookServiceImplTest {
         BookDto dto = buildBookDto();
 
         Book savedBook = buildBookEntity(dto, TOTAL_COPIES);
-        savedBook.setId(1L);
+        savedBook.setId(BOOK_ID);
 
         when(bookRepository.existsByExternalId(dto.getExternalId()))
                 .thenReturn(false);
@@ -71,9 +76,36 @@ class BookServiceImplTest {
         assertThat(capturedBook.getTotalCopies()).isEqualTo(TOTAL_COPIES);
         assertThat(capturedBook.getAvailableCopies()).isEqualTo(TOTAL_COPIES);
 
-        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getId()).isEqualTo(BOOK_ID);
         assertThat(result.getExternalId()).isEqualTo(dto.getExternalId());
         assertThat(result.getAvailableCopies()).isEqualTo(TOTAL_COPIES);
+    }
+
+    @Test
+    void shouldUpdateTotalCopiesSuccessfully() {
+
+        BookDto dto = buildBookDto();
+
+        Book existingBook = buildBookEntity(dto, 5);
+        existingBook.setId(BOOK_ID);
+        existingBook.setAvailableCopies(2);
+
+        when(bookRepository.findById(BOOK_ID))
+                .thenReturn(Optional.of(existingBook));
+
+        when(bookRepository.save(any(Book.class)))
+                .thenReturn(existingBook);
+
+        BookDetailedDto result = bookService.updateTotalCopies(BOOK_ID, 10);
+
+        verify(bookRepository).findById(BOOK_ID);
+        verify(bookRepository).save(any(Book.class));
+
+        assertThat(existingBook.getTotalCopies()).isEqualTo(10);
+        assertThat(existingBook.getAvailableCopies()).isEqualTo(7);
+
+        assertThat(result.getTotalCopies()).isEqualTo(10);
+        assertThat(result.getAvailableCopies()).isEqualTo(7);
     }
 
     @Test
@@ -88,6 +120,25 @@ class BookServiceImplTest {
                 .isInstanceOf(BookAlreadyExistsException.class);
 
         verify(bookRepository).existsByExternalId(dto.getExternalId());
+        verify(bookRepository, never()).save(any(Book.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenTotalCopiesIsLessThanBorrowedCopies() {
+
+        BookDto dto = buildBookDto();
+
+        Book existingBook = buildBookEntity(dto, 5);
+        existingBook.setId(BOOK_ID);
+        existingBook.setAvailableCopies(2);
+
+        when(bookRepository.findById(BOOK_ID))
+                .thenReturn(Optional.of(existingBook));
+
+        assertThatThrownBy(() -> bookService.updateTotalCopies(BOOK_ID, 2))
+                .isInstanceOf(InvalidBookUpdateException.class);
+
+        verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository, never()).save(any(Book.class));
     }
 
