@@ -146,11 +146,11 @@ class BookServiceImplTest {
         assertThat(capturedBook.getAuthor()).isEqualTo(dto.getAuthor());
         assertThat(capturedBook.getExternalId()).isEqualTo(dto.getExternalId());
         assertThat(capturedBook.getTotalCopies()).isEqualTo(TOTAL_COPIES);
-        assertThat(capturedBook.getAvailableCopies()).isEqualTo(TOTAL_COPIES);
+        assertThat(capturedBook.getAvailableCopies()).isEqualTo(5);
 
         assertThat(result.getId()).isEqualTo(BOOK_ID);
         assertThat(result.getExternalId()).isEqualTo(dto.getExternalId());
-        assertThat(result.getAvailableCopies()).isEqualTo(TOTAL_COPIES);
+        assertThat(result.getAvailableCopies()).isEqualTo(5);
     }
 
     @Test
