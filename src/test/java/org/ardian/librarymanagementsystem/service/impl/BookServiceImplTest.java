@@ -5,6 +5,8 @@ import org.ardian.librarymanagementsystem.config.OpenLibraryProperties;
 import org.ardian.librarymanagementsystem.dto.BookDetailedDto;
 import org.ardian.librarymanagementsystem.dto.BookDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.BookDeletionException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.validation.InvalidBookUpdateException;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.repository.BookRepository;
@@ -82,6 +84,21 @@ class BookServiceImplTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenBookAlreadyExists() {
+
+        BookDto dto = buildBookDto();
+
+        when(bookRepository.existsByExternalId(dto.getExternalId()))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> bookService.createBook(dto, TOTAL_COPIES))
+                .isInstanceOf(BookAlreadyExistsException.class);
+
+        verify(bookRepository).existsByExternalId(dto.getExternalId());
+        verify(bookRepository, never()).save(any(Book.class));
+    }
+
+    @Test
     void shouldUpdateTotalCopiesSuccessfully() {
 
         BookDto dto = buildBookDto();
@@ -109,21 +126,6 @@ class BookServiceImplTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenBookAlreadyExists() {
-
-        BookDto dto = buildBookDto();
-
-        when(bookRepository.existsByExternalId(dto.getExternalId()))
-                .thenReturn(true);
-
-        assertThatThrownBy(() -> bookService.createBook(dto, TOTAL_COPIES))
-                .isInstanceOf(BookAlreadyExistsException.class);
-
-        verify(bookRepository).existsByExternalId(dto.getExternalId());
-        verify(bookRepository, never()).save(any(Book.class));
-    }
-
-    @Test
     void shouldThrowExceptionWhenTotalCopiesIsLessThanBorrowedCopies() {
 
         BookDto dto = buildBookDto();
@@ -140,6 +142,52 @@ class BookServiceImplTest {
 
         verify(bookRepository).findById(BOOK_ID);
         verify(bookRepository, never()).save(any(Book.class));
+    }
+
+    @Test
+    void shouldDeleteBookSuccessfully() {
+
+        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
+        book.setId(BOOK_ID);
+        book.setAvailableCopies(5);
+
+        when(bookRepository.findById(BOOK_ID))
+                .thenReturn(Optional.of(book));
+
+        bookService.deleteBook(BOOK_ID);
+
+        verify(bookRepository).findById(BOOK_ID);
+        verify(bookRepository).delete(book);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBookNotFound() {
+
+        when(bookRepository.findById(BOOK_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookService.deleteBook(BOOK_ID))
+                .isInstanceOf(BookNotFoundException.class);
+
+        verify(bookRepository).findById(BOOK_ID);
+        verify(bookRepository, never()).delete(any(Book.class));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBookHasActiveLoans() {
+
+        Book book = buildBookEntity(buildBookDto(), TOTAL_COPIES);
+        book.setId(BOOK_ID);
+        book.setAvailableCopies(3);
+
+        when(bookRepository.findById(BOOK_ID))
+                .thenReturn(Optional.of(book));
+
+        assertThatThrownBy(() -> bookService.deleteBook(BOOK_ID))
+                .isInstanceOf(BookDeletionException.class);
+
+        verify(bookRepository).findById(BOOK_ID);
+        verify(bookRepository, never()).delete(any(Book.class));
     }
 
     private BookDto buildBookDto() {
