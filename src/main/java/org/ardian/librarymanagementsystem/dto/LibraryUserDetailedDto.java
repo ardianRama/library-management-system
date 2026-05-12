@@ -1,5 +1,6 @@
 package org.ardian.librarymanagementsystem.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.ardian.librarymanagementsystem.model.Role;
@@ -8,6 +9,7 @@ import org.ardian.librarymanagementsystem.model.Role;
  * Represent a detailed library user in the database visible for the admin.
  */
 
+@AllArgsConstructor
 @Getter
 @Builder
 public class LibraryUserDetailedDto {
