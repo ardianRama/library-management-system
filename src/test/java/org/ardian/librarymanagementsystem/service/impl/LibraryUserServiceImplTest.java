@@ -3,9 +3,11 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
+import org.ardian.librarymanagementsystem.model.Loan;
 import org.ardian.librarymanagementsystem.model.Role;
 import org.ardian.librarymanagementsystem.repository.LibraryUserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +19,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -186,6 +189,44 @@ class LibraryUserServiceImplTest {
         ).isInstanceOf(UserNotFoundException.class);
     }
 
+    @Test
+    void shouldDeleteUserSuccessfullyWhenUserHasNoActiveLoans() {
+        libraryUser.setMyLoans(List.of(returnedLoan()));
+
+        when(libraryUserRepository.findById(USER_ID))
+                .thenReturn(Optional.of(libraryUser));
+
+        libraryUserService.deleteLibraryUser(USER_ID);
+
+        verify(libraryUserRepository).delete(libraryUser);
+    }
+
+    @Test
+    void shouldThrowUserNotFoundExceptionWhenDeletingNonExistentUser() {
+        when(libraryUserRepository.findById(INVALID_USER_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                libraryUserService.deleteLibraryUser(INVALID_USER_ID)
+        ).isInstanceOf(UserNotFoundException.class);
+
+        verify(libraryUserRepository, never()).delete(any());
+    }
+
+    @Test
+    void shouldThrowUserHasActiveLoansExceptionWhenUserHasActiveLoan() {
+        libraryUser.setMyLoans(List.of(activeLoan()));
+
+        when(libraryUserRepository.findById(USER_ID))
+                .thenReturn(Optional.of(libraryUser));
+
+        assertThatThrownBy(() ->
+                libraryUserService.deleteLibraryUser(USER_ID)
+        ).isInstanceOf(UserHasActiveLoansException.class);
+
+        verify(libraryUserRepository, never()).delete(any());
+    }
+
     private LibraryUser createUser(Long id, String email, String password, String firstName, String lastName) {
         LibraryUser user = new LibraryUser();
         user.setId(id);
@@ -205,6 +246,18 @@ class LibraryUserServiceImplTest {
                 .lastName(lastName)
                 .role(Role.USER)
                 .build();
+    }
+
+    private Loan activeLoan() {
+        Loan loan = new Loan();
+        loan.setReturnedAt(null);
+        return loan;
+    }
+
+    private Loan returnedLoan() {
+        Loan loan = new Loan();
+        loan.setReturnedAt(LocalDateTime.now());
+        return loan;
     }
 }
 
