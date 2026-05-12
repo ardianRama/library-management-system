@@ -73,21 +73,15 @@ class LibraryUserServiceImplTest {
 
     @Test
     void shouldRegisterUserSuccessfully() {
-        when(libraryUserRepository.existsByEmail(EMAIL))
-                .thenReturn(false);
+        mockUserDoesNotExist();
+        mockPasswordEncoding();
+        mockSaveUser();
 
-        when(passwordEncoder.encode(PASSWORD))
-                .thenReturn(ENCODED_PASSWORD);
-
-        when(libraryUserRepository.save(any(LibraryUser.class)))
-                .thenReturn(libraryUser);
-
-        try (MockedStatic<LibraryUserMapper> mapperMock =
-                     mockStatic(LibraryUserMapper.class)) {
+        try (MockedStatic<LibraryUserMapper> mapperMock = mockMapper()) {
 
             mapperMock.when(() ->
-                    LibraryUserMapper.toEntity(userDto, Role.USER)
-            ).thenReturn(libraryUser);
+                    LibraryUserMapper.toEntity(userDto, Role.USER))
+                    .thenReturn(libraryUser);
 
             libraryUserService.registerUser(userDto);
 
@@ -103,8 +97,8 @@ class LibraryUserServiceImplTest {
                 .thenReturn(true);
 
         assertThatThrownBy(() ->
-                libraryUserService.registerUser(userDto)
-        ).isInstanceOf(UserAlreadyExistsException.class);
+                libraryUserService.registerUser(userDto))
+                .isInstanceOf(UserAlreadyExistsException.class);
 
         verify(libraryUserRepository, never()).save(any());
     }
@@ -129,19 +123,17 @@ class LibraryUserServiceImplTest {
         when(libraryUserRepository.findAll())
                 .thenReturn(List.of(libraryUser, secondUser));
 
-        try (MockedStatic<LibraryUserMapper> mapperMock =
-                     mockStatic(LibraryUserMapper.class)) {
+        try (MockedStatic<LibraryUserMapper> mapperMock = mockMapper()) {
 
             mapperMock.when(() ->
-                    LibraryUserMapper.toDetailedDto(libraryUser)
-            ).thenReturn(detailedDto);
+                    LibraryUserMapper.toDetailedDto(libraryUser))
+                    .thenReturn(detailedDto);
 
             mapperMock.when(() ->
-                    LibraryUserMapper.toDetailedDto(secondUser)
-            ).thenReturn(secondDto);
+                    LibraryUserMapper.toDetailedDto(secondUser))
+                    .thenReturn(secondDto);
 
-            List<LibraryUserDetailedDto> result =
-                    libraryUserService.getAllUsers();
+            List<LibraryUserDetailedDto> result = libraryUserService.getAllUsers();
 
             assertThat(result)
                     .hasSize(2)
@@ -154,8 +146,7 @@ class LibraryUserServiceImplTest {
         when(libraryUserRepository.findAll())
                 .thenReturn(List.of());
 
-        List<LibraryUserDetailedDto> result =
-                libraryUserService.getAllUsers();
+        List<LibraryUserDetailedDto> result = libraryUserService.getAllUsers();
 
         assertThat(result).isEmpty();
     }
@@ -165,15 +156,13 @@ class LibraryUserServiceImplTest {
         when(libraryUserRepository.findById(USER_ID))
                 .thenReturn(Optional.of(libraryUser));
 
-        try (MockedStatic<LibraryUserMapper> mapperMock =
-                     mockStatic(LibraryUserMapper.class)) {
+        try (MockedStatic<LibraryUserMapper> mapperMock = mockMapper()) {
 
             mapperMock.when(() ->
-                    LibraryUserMapper.toDetailedDto(libraryUser)
-            ).thenReturn(detailedDto);
+                    LibraryUserMapper.toDetailedDto(libraryUser))
+                    .thenReturn(detailedDto);
 
-            LibraryUserDetailedDto result =
-                    libraryUserService.getUserById(USER_ID);
+            LibraryUserDetailedDto result = libraryUserService.getUserById(USER_ID);
 
             assertThat(result).isEqualTo(detailedDto);
         }
@@ -185,8 +174,8 @@ class LibraryUserServiceImplTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
-                libraryUserService.getUserById(INVALID_USER_ID)
-        ).isInstanceOf(UserNotFoundException.class);
+                libraryUserService.getUserById(INVALID_USER_ID))
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test
@@ -207,8 +196,8 @@ class LibraryUserServiceImplTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() ->
-                libraryUserService.deleteLibraryUser(INVALID_USER_ID)
-        ).isInstanceOf(UserNotFoundException.class);
+                libraryUserService.deleteLibraryUser(INVALID_USER_ID))
+                .isInstanceOf(UserNotFoundException.class);
 
         verify(libraryUserRepository, never()).delete(any());
     }
@@ -221,8 +210,8 @@ class LibraryUserServiceImplTest {
                 .thenReturn(Optional.of(libraryUser));
 
         assertThatThrownBy(() ->
-                libraryUserService.deleteLibraryUser(USER_ID)
-        ).isInstanceOf(UserHasActiveLoansException.class);
+                libraryUserService.deleteLibraryUser(USER_ID))
+                .isInstanceOf(UserHasActiveLoansException.class);
 
         verify(libraryUserRepository, never()).delete(any());
     }
@@ -246,6 +235,25 @@ class LibraryUserServiceImplTest {
                 .lastName(lastName)
                 .role(Role.USER)
                 .build();
+    }
+
+    private MockedStatic<LibraryUserMapper> mockMapper() {
+        return mockStatic(LibraryUserMapper.class);
+    }
+
+    private void mockUserDoesNotExist() {
+        when(libraryUserRepository.existsByEmail(EMAIL))
+                .thenReturn(false);
+    }
+
+    private void mockPasswordEncoding() {
+        when(passwordEncoder.encode(PASSWORD))
+                .thenReturn(ENCODED_PASSWORD);
+    }
+
+    private void mockSaveUser() {
+        when(libraryUserRepository.save(any(LibraryUser.class)))
+                .thenReturn(libraryUser);
     }
 
     private Loan activeLoan() {
