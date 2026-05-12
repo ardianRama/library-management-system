@@ -21,7 +21,7 @@ public class LibraryUserController {
 
     @GetMapping("/detailed")
     public List<LibraryUserDetailedDto> getAllDetailedLibraryUsers() {
-        return libraryUserService.getUsers();
+        return libraryUserService.getAllUsers();
     }
 
     @GetMapping("/detailed/{userId}")

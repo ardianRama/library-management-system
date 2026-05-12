@@ -9,7 +9,7 @@ public interface LibraryUserService {
 
     void registerUser(LibraryUserDto dto);
 
-    List<LibraryUserDetailedDto> getUsers();
+    List<LibraryUserDetailedDto> getAllUsers();
 
     LibraryUserDetailedDto getUserById(Long id);
 

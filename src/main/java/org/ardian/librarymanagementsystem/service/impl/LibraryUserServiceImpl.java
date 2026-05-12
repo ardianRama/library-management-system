@@ -51,7 +51,7 @@ public class LibraryUserServiceImpl implements LibraryUserService {
     }
 
     @Override
-    public List<LibraryUserDetailedDto> getUsers() {
+    public List<LibraryUserDetailedDto> getAllUsers() {
         return libraryUserRepository.findAll()
                 .stream()
                 .map(LibraryUserMapper::toDetailedDto)

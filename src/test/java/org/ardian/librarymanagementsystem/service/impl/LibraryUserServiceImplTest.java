@@ -15,6 +15,9 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -99,6 +102,57 @@ class LibraryUserServiceImplTest {
         ).isInstanceOf(UserAlreadyExistsException.class);
 
         verify(libraryUserRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldReturnAllUsersAsDtos() {
+        LibraryUser secondUser = createUser(
+                SECOND_USER_ID,
+                SECOND_EMAIL,
+                PASSWORD,
+                SECOND_FIRST_NAME,
+                SECOND_LAST_NAME
+        );
+
+        LibraryUserDetailedDto secondDto = createDetailedDto(
+                SECOND_USER_ID,
+                SECOND_EMAIL,
+                SECOND_FIRST_NAME,
+                SECOND_LAST_NAME
+        );
+
+        when(libraryUserRepository.findAll())
+                .thenReturn(List.of(libraryUser, secondUser));
+
+        try (MockedStatic<LibraryUserMapper> mapperMock =
+                     mockStatic(LibraryUserMapper.class)) {
+
+            mapperMock.when(() ->
+                    LibraryUserMapper.toDetailedDto(libraryUser)
+            ).thenReturn(detailedDto);
+
+            mapperMock.when(() ->
+                    LibraryUserMapper.toDetailedDto(secondUser)
+            ).thenReturn(secondDto);
+
+            List<LibraryUserDetailedDto> result =
+                    libraryUserService.getAllUsers();
+
+            assertThat(result)
+                    .hasSize(2)
+                    .containsExactly(detailedDto, secondDto);
+        }
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenNoUsersExist() {
+        when(libraryUserRepository.findAll())
+                .thenReturn(List.of());
+
+        List<LibraryUserDetailedDto> result =
+                libraryUserService.getAllUsers();
+
+        assertThat(result).isEmpty();
     }
 
     private LibraryUser createUser(Long id, String email, String password, String firstName, String lastName) {
