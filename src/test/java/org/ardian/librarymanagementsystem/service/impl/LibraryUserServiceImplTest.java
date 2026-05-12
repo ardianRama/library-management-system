@@ -3,6 +3,7 @@ package org.ardian.librarymanagementsystem.service.impl;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDetailedDto;
 import org.ardian.librarymanagementsystem.dto.LibraryUserDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserAlreadyExistsException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LibraryUserMapper;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
 import org.ardian.librarymanagementsystem.model.Role;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -153,6 +155,35 @@ class LibraryUserServiceImplTest {
                 libraryUserService.getAllUsers();
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void shouldReturnDtoWhenUserExists() {
+        when(libraryUserRepository.findById(USER_ID))
+                .thenReturn(Optional.of(libraryUser));
+
+        try (MockedStatic<LibraryUserMapper> mapperMock =
+                     mockStatic(LibraryUserMapper.class)) {
+
+            mapperMock.when(() ->
+                    LibraryUserMapper.toDetailedDto(libraryUser)
+            ).thenReturn(detailedDto);
+
+            LibraryUserDetailedDto result =
+                    libraryUserService.getUserById(USER_ID);
+
+            assertThat(result).isEqualTo(detailedDto);
+        }
+    }
+
+    @Test
+    void shouldThrowUserNotFoundExceptionWhenUserDoesNotExist() {
+        when(libraryUserRepository.findById(INVALID_USER_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() ->
+                libraryUserService.getUserById(INVALID_USER_ID)
+        ).isInstanceOf(UserNotFoundException.class);
     }
 
     private LibraryUser createUser(Long id, String email, String password, String firstName, String lastName) {
