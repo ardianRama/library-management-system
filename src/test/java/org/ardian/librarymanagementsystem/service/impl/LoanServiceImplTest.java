@@ -208,6 +208,18 @@ class LoanServiceImplTest {
         }
     }
 
+    @Test
+    void shouldReturnEmptyListWhenUserHasNoActiveLoans() {
+        mockFindUser(EMAIL, user);
+
+        when(loanRepository.findAllByLibraryUserEmailAndReturnedAtIsNull(EMAIL))
+                .thenReturn(List.of());
+
+        List<LoanDto> result = loanService.getAllLoans(EMAIL);
+
+        assertThat(result).isEmpty();
+    }
+
     private LibraryUser createUser(Long id, String email, Role role) {
         LibraryUser u = new LibraryUser();
         u.setId(id);
