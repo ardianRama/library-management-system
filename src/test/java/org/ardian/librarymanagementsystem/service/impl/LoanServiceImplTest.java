@@ -4,6 +4,7 @@ import org.ardian.librarymanagementsystem.dto.LoanDto;
 import org.ardian.librarymanagementsystem.exception.business.conflict.BookNotAvailableException;
 import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.LoanNotFoundException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
@@ -138,6 +139,35 @@ class LoanServiceImplTest {
         verify(loanRepository, never()).save(any());
     }
 
+    @Test
+    void shouldReturnBookSuccessfully() {
+        mockFindActiveLoan(EMAIL, BOOK_ID, activeLoan);
+        when(loanRepository.save(activeLoan)).thenReturn(activeLoan);
+
+        try (MockedStatic<LoanMapper> mapperMock = mockMapper()) {
+            mapperMock.when(() -> LoanMapper.toDto(activeLoan))
+                    .thenReturn(loanDto);
+
+            LoanDto result = loanService.returnBook(EMAIL, BOOK_ID);
+
+            assertThat(result).isEqualTo(loanDto);
+            assertThat(book.getAvailableCopies()).isEqualTo(AVAILABLE_COPIES + 1);
+            assertThat(activeLoan.getReturnedAt()).isNotNull();
+            verify(loanRepository).save(activeLoan);
+        }
+    }
+
+    @Test
+    void shouldThrowLoanNotFoundExceptionWhenNoActiveLoanExists() {
+        when(loanRepository.findByLibraryUserEmailAndBookIdAndReturnedAtIsNull(EMAIL, BOOK_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loanService.returnBook(EMAIL, BOOK_ID))
+                .isInstanceOf(LoanNotFoundException.class);
+
+        verify(loanRepository, never()).save(any());
+    }
+
     private LibraryUser createUser(Long id, String email, Role role) {
         LibraryUser u = new LibraryUser();
         u.setId(id);
@@ -187,6 +217,11 @@ class LoanServiceImplTest {
     private void mockFindBook(Long bookId, Book book) {
         when(bookRepository.findById(bookId))
                 .thenReturn(Optional.of(book));
+    }
+
+    private void mockFindActiveLoan(String email, Long bookId, Loan loan) {
+        when(loanRepository.findByLibraryUserEmailAndBookIdAndReturnedAtIsNull(email, bookId))
+                .thenReturn(Optional.of(loan));
     }
 
     private void mockLoanDoesNotExist(Long userId, Long bookId) {
