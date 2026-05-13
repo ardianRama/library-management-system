@@ -1,6 +1,8 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
 import org.ardian.librarymanagementsystem.dto.LoanDto;
+import org.ardian.librarymanagementsystem.exception.business.conflict.BookNotAvailableException;
+import org.ardian.librarymanagementsystem.exception.business.conflict.UserHasActiveLoansException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
 import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
@@ -106,6 +108,32 @@ class LoanServiceImplTest {
 
         assertThatThrownBy(() -> loanService.borrowBook(EMAIL, INVALID_ID))
                 .isInstanceOf(BookNotFoundException.class);
+
+        verify(loanRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowUserHasActiveLoansExceptionWhenBookAlreadyBorrowed() {
+        mockFindUser(EMAIL, user);
+        mockFindBook(BOOK_ID, book);
+        when(loanRepository.existsByLibraryUserIdAndBookIdAndReturnedAtIsNull(USER_ID, BOOK_ID))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> loanService.borrowBook(EMAIL, BOOK_ID))
+                .isInstanceOf(UserHasActiveLoansException.class);
+
+        verify(loanRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowBookNotAvailableExceptionWhenNoCopiesLeft() {
+        mockFindUser(EMAIL, user);
+        Book unavailableBook = createBook(BOOK_ID, 0);
+        mockFindBook(BOOK_ID, unavailableBook);
+        mockLoanDoesNotExist(USER_ID, BOOK_ID);
+
+        assertThatThrownBy(() -> loanService.borrowBook(EMAIL, BOOK_ID))
+                .isInstanceOf(BookNotAvailableException.class);
 
         verify(loanRepository, never()).save(any());
     }
