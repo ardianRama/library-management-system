@@ -39,10 +39,18 @@ class BookServiceImplTest {
 
     private static final String QUERY = "clean code";
     private static final Long BOOK_ID = 1L;
+
+    private static final String TITLE = "Clean Code";
+    private static final String AUTHOR = "Robert C. Martin";
+    private static final int PUBLISH_YEAR = 2008;
+    private static final String COVER_URL = "cover-url";
+    private static final String EXTERNAL_ID = "OL123";
+
     private static final int TOTAL_COPIES = 5;
     private static final int UPDATED_TOTAL_COPIES = 10;
     private static final int AVAILABLE_COPIES = 5;
     private static final int AVAILABLE_COPIES_AFTER_LOAN = 2;
+    private static final int TOTAL_COPIES_BELOW_BORROWED = 2;
 
     @Mock private BookRepository bookRepository;
     @Mock private BookClient bookClient;
@@ -55,7 +63,7 @@ class BookServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        dto = new BookDto("Clean Code", "Robert C. Martin", 2008, "cover-url", "OL123");
+        dto = new BookDto(TITLE, AUTHOR, PUBLISH_YEAR, COVER_URL, EXTERNAL_ID);
         book = buildAvailableBook(dto, BOOK_ID, TOTAL_COPIES);
     }
 
@@ -115,8 +123,8 @@ class BookServiceImplTest {
         verify(bookRepository).save(bookCaptor.capture());
         Book captured = bookCaptor.getValue();
 
-        assertThat(captured.getTitle()).isEqualTo(dto.getTitle());
-        assertThat(captured.getAuthor()).isEqualTo(dto.getAuthor());
+        assertThat(captured.getTitle()).isEqualTo(TITLE);
+        assertThat(captured.getAuthor()).isEqualTo(AUTHOR);
         assertThat(captured.getTotalCopies()).isEqualTo(TOTAL_COPIES);
         assertThat(captured.getAvailableCopies()).isEqualTo(AVAILABLE_COPIES);
         assertThat(result.getId()).isEqualTo(BOOK_ID);
@@ -153,7 +161,7 @@ class BookServiceImplTest {
         Book bookWithLoans = buildBook(dto, BOOK_ID, TOTAL_COPIES, AVAILABLE_COPIES_AFTER_LOAN);
         when(bookRepository.findById(BOOK_ID)).thenReturn(Optional.of(bookWithLoans));
 
-        assertThatThrownBy(() -> bookService.updateTotalCopies(BOOK_ID, 2))
+        assertThatThrownBy(() -> bookService.updateTotalCopies(BOOK_ID, TOTAL_COPIES_BELOW_BORROWED))
                 .isInstanceOf(InvalidBookUpdateException.class);
 
         verify(bookRepository, never()).save(any(Book.class));
