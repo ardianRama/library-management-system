@@ -229,6 +229,33 @@ class LoanServiceImplTest {
                 .isInstanceOf(UserNotFoundException.class);
     }
 
+    @Test
+    void shouldReturnAnyLoanByIdForAdmin() {
+        mockFindUser(ADMIN_EMAIL, adminUser);
+
+        when(loanRepository.findById(LOAN_ID))
+                .thenReturn(Optional.of(activeLoan));
+
+        try (MockedStatic<LoanMapper> mapperMock = mockMapper()) {
+            mapperMock.when(() -> LoanMapper.toDto(activeLoan)).thenReturn(loanDto);
+
+            LoanDto result = loanService.getLoanById(LOAN_ID, ADMIN_EMAIL);
+
+            assertThat(result).isEqualTo(loanDto);
+        }
+    }
+
+    @Test
+    void shouldThrowLoanNotFoundExceptionWhenAdminRequestsNonExistentLoan() {
+        mockFindUser(ADMIN_EMAIL, adminUser);
+
+        when(loanRepository.findById(INVALID_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loanService.getLoanById(INVALID_ID, ADMIN_EMAIL))
+                .isInstanceOf(LoanNotFoundException.class);
+    }
+
     private LibraryUser createUser(Long id, String email, Role role) {
         LibraryUser u = new LibraryUser();
         u.setId(id);
