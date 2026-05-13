@@ -220,6 +220,15 @@ class LoanServiceImplTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    void shouldThrowUserNotFoundExceptionWhenGettingLoansForUnknownEmail() {
+        when(libraryUserRepository.findByEmail(EMAIL))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loanService.getAllLoans(EMAIL))
+                .isInstanceOf(UserNotFoundException.class);
+    }
+
     private LibraryUser createUser(Long id, String email, Role role) {
         LibraryUser u = new LibraryUser();
         u.setId(id);
