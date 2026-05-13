@@ -1,6 +1,8 @@
 package org.ardian.librarymanagementsystem.service.impl;
 
 import org.ardian.librarymanagementsystem.dto.LoanDto;
+import org.ardian.librarymanagementsystem.exception.business.notfound.BookNotFoundException;
+import org.ardian.librarymanagementsystem.exception.business.notfound.UserNotFoundException;
 import org.ardian.librarymanagementsystem.mapper.internal.LoanMapper;
 import org.ardian.librarymanagementsystem.model.Book;
 import org.ardian.librarymanagementsystem.model.LibraryUser;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -82,6 +85,29 @@ class LoanServiceImplTest {
             assertThat(book.getAvailableCopies()).isEqualTo(AVAILABLE_COPIES - 1);
             verify(loanRepository).save(any(Loan.class));
         }
+    }
+
+    @Test
+    void shouldThrowUserNotFoundExceptionWhenBorrowingWithUnknownEmail() {
+        when(libraryUserRepository.findByEmail(EMAIL))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loanService.borrowBook(EMAIL, BOOK_ID))
+                .isInstanceOf(UserNotFoundException.class);
+
+        verify(loanRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowBookNotFoundExceptionWhenBorrowingNonExistentBook() {
+        mockFindUser(EMAIL, user);
+        when(bookRepository.findById(INVALID_ID))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> loanService.borrowBook(EMAIL, INVALID_ID))
+                .isInstanceOf(BookNotFoundException.class);
+
+        verify(loanRepository, never()).save(any());
     }
 
     private LibraryUser createUser(Long id, String email, Role role) {
