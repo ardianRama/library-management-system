@@ -23,6 +23,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -166,6 +167,27 @@ class LoanServiceImplTest {
                 .isInstanceOf(LoanNotFoundException.class);
 
         verify(loanRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldReturnAllLoansForAdmin() {
+        mockFindUser(ADMIN_EMAIL, adminUser);
+        Loan secondLoan = createActiveLoan(2L, adminUser, book);
+        LoanDto secondDto = createLoanDto(2L);
+
+        when(loanRepository.findAll())
+                .thenReturn(List.of(activeLoan, secondLoan));
+
+        try (MockedStatic<LoanMapper> mapperMock = mockMapper()) {
+            mapperMock.when(() -> LoanMapper.toDto(activeLoan)).thenReturn(loanDto);
+            mapperMock.when(() -> LoanMapper.toDto(secondLoan)).thenReturn(secondDto);
+
+            List<LoanDto> result = loanService.getAllLoans(ADMIN_EMAIL);
+
+            assertThat(result)
+                    .hasSize(2)
+                    .containsExactly(loanDto, secondDto);
+        }
     }
 
     private LibraryUser createUser(Long id, String email, Role role) {
