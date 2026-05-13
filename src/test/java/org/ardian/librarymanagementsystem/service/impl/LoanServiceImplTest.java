@@ -190,6 +190,24 @@ class LoanServiceImplTest {
         }
     }
 
+    @Test
+    void shouldReturnOnlyActiveLoansForRegularUser() {
+        mockFindUser(EMAIL, user);
+
+        when(loanRepository.findAllByLibraryUserEmailAndReturnedAtIsNull(EMAIL))
+                .thenReturn(List.of(activeLoan));
+
+        try (MockedStatic<LoanMapper> mapperMock = mockMapper()) {
+            mapperMock.when(() -> LoanMapper.toDto(activeLoan)).thenReturn(loanDto);
+
+            List<LoanDto> result = loanService.getAllLoans(EMAIL);
+
+            assertThat(result)
+                    .hasSize(1)
+                    .containsExactly(loanDto);
+        }
+    }
+
     private LibraryUser createUser(Long id, String email, Role role) {
         LibraryUser u = new LibraryUser();
         u.setId(id);
