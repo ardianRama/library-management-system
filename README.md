@@ -97,7 +97,7 @@ The API is documented with Swagger UI, which is the recommended way to explore a
 
 The API is protected by Spring Security. When accessing Swagger UI at `http://localhost:8080/swagger-ui.html`, you will be prompted to log in before you can explore and test the endpoints.
 
-To log in as admin, use the credentials you configured via environment variables.
+To log in as admin, use the credentials you configured via application environment variables.
 
 The `/api/auth/register` endpoint is publicly accessible.
 
