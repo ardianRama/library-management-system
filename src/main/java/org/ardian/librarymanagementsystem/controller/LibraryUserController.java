@@ -10,7 +10,7 @@ import java.util.List;
 
 @IsAdmin
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class LibraryUserController {
 
     private final LibraryUserService libraryUserService;
