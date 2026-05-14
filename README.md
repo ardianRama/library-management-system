@@ -8,14 +8,14 @@
 A REST API built with Java 21 and Spring Boot for managing a digital library system.
 
 The application supports two main roles:
-- **Admin** — full control over books, users, and loans
-- **User** — can browse, borrow, and manage their own loans
+- **Admin** — full control over books, users and loans
+- **User** — can browse, borrow and manage their own loans
 
 The system integrates with the Open Library API, allowing admins to search for books externally before adding them to the local database.
 
 ---
 
-## Features
+## ✨ Features
 
 ### Admin
 - Search books using the Open Library API
@@ -36,7 +36,7 @@ The system integrates with the Open Library API, allowing admins to search for b
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -48,7 +48,7 @@ The system integrates with the Open Library API, allowing admins to search for b
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -59,7 +59,7 @@ Make sure you have installed:
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/library-management-system.git
+git clone https://github.com/ardianRama/library-management-system.git
 cd library-management-system
 ```
 
@@ -85,7 +85,7 @@ docker-compose up -d
 
 ---
 
-## API Documentation
+## 📖 API Documentation
 
 The API is documented with Swagger UI, which is the recommended way to explore and test all available endpoints. Once the application is running, open:
 
@@ -93,10 +93,62 @@ The API is documented with Swagger UI, which is the recommended way to explore a
 
 ---
 
-## Ports
+## 🔐 Authentication
+
+The API is protected by Spring Security. When accessing Swagger UI at `http://localhost:8080/swagger-ui.html`, you will be prompted to log in before you can explore and test the endpoints.
+
+To log in as admin, use the credentials you configured via environment variables.
+
+The `/api/auth/register` endpoint is publicly accessible.
+
+---
+
+## 🔗 Endpoints
+
+### Books
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `POST` | `/api/books/import` | Import a book from Open Library | Admin |
+| `PATCH` | `/api/books/{bookId}/copies` | Update total copies of a book | Admin |
+| `GET` | `/api/books` | View all books | User, Admin |
+| `GET` | `/api/books/search` | Search books in the library | User, Admin |
+| `GET` | `/api/books/search/external` | Search books via Open Library API | Admin |
+| `GET` | `/api/books/detailed` | View all books with detailed information | Admin |
+| `GET` | `/api/books/detailed/{bookId}` | View details of a specific book | Admin |
+| `DELETE` | `/api/books/{bookId}` | Delete a book | Admin |
+
+### Loans
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `POST` | `/api/loans/borrow` | Borrow a book | User, Admin |
+| `POST` | `/api/loans/return` | Return a book | User, Admin |
+| `GET` | `/api/loans` | View loans | User, Admin |
+| `GET` | `/api/loans/{loanId}` | View loan by ID | User, Admin |
+
+### Auth
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user account | Public, Admin |
+
+### User
+| Method | Endpoint | Description | Access |
+|---|---|---|---|
+| `GET` | `/api/user/detailed` | Get all users with detailed information | Admin |
+| `GET` | `/api/user/detailed/{userId}` | Get details of a specific user | Admin |
+| `DELETE` | `/api/user/{userId}` | Delete a user | Admin |
+
+---
+
+## 🔌 Ports
 
 | Service | Port |
 |---|---|
 | Spring Boot API | 8080 |
 | PostgreSQL | 5234 |
 | pgAdmin | 8081 |
+
+---
+
+## License
+
+MIT © Ardian Rama
