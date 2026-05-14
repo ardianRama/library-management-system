@@ -61,13 +61,13 @@ git clone https://github.com/ardianRama/library-management-system.git
 cd library-management-system
 ```
 
-### 2. Configure environment variables
+### 2. Configure Docker environment variables
 
 Create a `.env` file in the project root based on `.env.example`.
 
 ### 3. Set application environment variables
 
-Set the required environment variables in your shell or IDE run configuration. See `application-example.properties` for reference.
+Set the required application environment variables in your shell or IDE run configuration. See `application-example.properties` for reference.
 
 ### 4. Start the database
 
@@ -81,9 +81,7 @@ docker-compose up -d
 ./mvnw spring-boot:run
 ```
 
-> **💡 Tip:** The database starts empty. Use the `/api/books/search/external` 
-> endpoint to search for books via the Open Library API, then import them 
-> using `/api/books/import`.
+> **💡 Tip:** The database starts empty except for the admin account. Use the `/api/books/search/external` endpoint to search for books via the Open Library API, then import them using `/api/books/import`.
 
 ---
 
