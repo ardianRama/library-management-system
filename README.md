@@ -21,18 +21,16 @@ The system integrates with the Open Library API, allowing admins to search for b
 - Search books using the Open Library API
 - Add books to the library database
 - Update a book's `totalCopies`
-- View all books with detailed information
-- View details of a specific book
+- View books with detailed information
 - Add and delete users
+- View users with detailed information
 - View complete loan history (active and returned)
-- View details of a specific loan
 
 ### User
 - Register a new account
 - Search for books available in the library
 - Borrow and return books
-- View active loan history
-- View details of a specific active loan
+- View active loans
 
 ---
 
@@ -43,7 +41,7 @@ The system integrates with the Open Library API, allowing admins to search for b
 | Language | Java 21 |
 | Framework | Spring Boot 4.x |
 | Database | PostgreSQL |
-| Infrastructure | Docker |
+| Container | Docker |
 | API Docs | Swagger / OpenAPI |
 
 ---
@@ -82,6 +80,10 @@ docker-compose up -d
 ```bash
 ./mvnw spring-boot:run
 ```
+
+> **💡 Tip:** The database starts empty. Use the `/api/books/search/external` 
+> endpoint to search for books via the Open Library API, then import them 
+> using `/api/books/import`.
 
 ---
 
