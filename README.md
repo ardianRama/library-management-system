@@ -132,12 +132,12 @@ The `/api/auth/register` endpoint is publicly accessible.
 |---|---|---|---|---|---|
 | `POST` | `/api/auth/register` | Register a new user account | ✅ | ❌ | ✅ |
 
-### User
+### Users
 | Method | Endpoint | Description | Admin | User |
 |---|---|---|---|---|
-| `GET` | `/api/user/detailed` | Get all users with detailed information | ✅ | ❌ |
-| `GET` | `/api/user/detailed/{userId}` | Get a specific user with detailed information | ✅ | ❌ |
-| `DELETE` | `/api/user/{userId}` | Delete a user | ✅ | ❌ |
+| `GET` | `/api/users/detailed` | Get all users with detailed information | ✅ | ❌ |
+| `GET` | `/api/users/detailed/{userId}` | Get a specific user with detailed information | ✅ | ❌ |
+| `DELETE` | `/api/users/{userId}` | Delete a user | ✅ | ❌ |
 
 ---
 
