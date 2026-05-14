@@ -113,8 +113,8 @@ The `/api/auth/register` endpoint is publicly accessible.
 | `GET` | `/api/books` | View all books | User, Admin |
 | `GET` | `/api/books/search` | Search books in the library | User, Admin |
 | `GET` | `/api/books/search/external` | Search books via Open Library API | Admin |
-| `GET` | `/api/books/detailed` | View all books with detailed information | Admin |
-| `GET` | `/api/books/detailed/{bookId}` | View details of a specific book | Admin |
+| `GET` | `/api/books/detailed` | View all books in the library with detailed information | Admin |
+| `GET` | `/api/books/detailed/{bookId}` | View a specific book with detailed information | Admin |
 | `DELETE` | `/api/books/{bookId}` | Delete a book | Admin |
 
 ### Loans
