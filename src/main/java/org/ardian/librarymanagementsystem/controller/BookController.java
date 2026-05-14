@@ -3,7 +3,7 @@ package org.ardian.librarymanagementsystem.controller;
 import jakarta.validation.Valid;
 import org.ardian.librarymanagementsystem.dto.*;
 import org.ardian.librarymanagementsystem.security.annotation.IsAdmin;
-import org.ardian.librarymanagementsystem.security.annotation.IsUser;
+import org.ardian.librarymanagementsystem.security.annotation.IsUserOrAdmin;
 import org.ardian.librarymanagementsystem.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,13 +70,13 @@ public class BookController {
         return bookService.getDetailedBook(bookId);
     }
 
-    @IsUser
+    @IsUserOrAdmin
     @GetMapping("/search")
     public List<LibraryBookDto> searchLibraryBooks(@RequestParam String q) {
         return bookService.searchLibraryBooks(q);
     }
 
-    @IsUser
+    @IsUserOrAdmin
     @GetMapping
     public List<LibraryBookDto> getAllBooks() {
         return bookService.getAllBooks();
