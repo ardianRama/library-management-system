@@ -103,41 +103,43 @@ To log in as admin, use the credentials you configured via environment variables
 
 The `/api/auth/register` endpoint is publicly accessible.
 
+> **💡 Tip:** To create a user account, use a tool like Postman to call `/api/auth/register` directly, or log in as admin and use the `/api/auth/register` endpoint in Swagger UI.
+
 ---
 
 ## 🔗 Endpoints
 
 ### Books
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| `POST` | `/api/books/import` | Import a book from Open Library | Admin |
-| `PATCH` | `/api/books/{bookId}/copies` | Update total copies of a book | Admin |
-| `GET` | `/api/books` | View all books | User, Admin |
-| `GET` | `/api/books/search` | Search books in the library | User, Admin |
-| `GET` | `/api/books/search/external` | Search books via Open Library API | Admin |
-| `GET` | `/api/books/detailed` | View all books in the library with detailed information | Admin |
-| `GET` | `/api/books/detailed/{bookId}` | View a specific book with detailed information | Admin |
-| `DELETE` | `/api/books/{bookId}` | Delete a book | Admin |
+| Method | Endpoint | Description | Admin | User |
+|---|---|---|---|---|
+| `POST` | `/api/books/import` | Import a book from Open Library | ✅ | ❌ |
+| `PATCH` | `/api/books/{bookId}/copies` | Update total copies of a book | ✅ | ❌ |
+| `GET` | `/api/books` | View all books | ✅ | ✅ |
+| `GET` | `/api/books/search` | Search books in the library | ✅ | ✅ |
+| `GET` | `/api/books/search/external` | Search books via Open Library API | ✅ | ❌ |
+| `GET` | `/api/books/detailed` | View all books in the library with detailed information | ✅ | ❌ |
+| `GET` | `/api/books/detailed/{bookId}` | View a specific book with detailed information | ✅ | ❌ |
+| `DELETE` | `/api/books/{bookId}` | Delete a book | ✅ | ❌ |
 
 ### Loans
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| `POST` | `/api/loans/borrow` | Borrow a book | User, Admin |
-| `POST` | `/api/loans/return` | Return a book | User, Admin |
-| `GET` | `/api/loans` | View all loans | User, Admin |
-| `GET` | `/api/loans/{loanId}` | View a specific loan | User, Admin |
+| Method | Endpoint | Description | Admin | User |
+|---|---|---|---|---|
+| `POST` | `/api/loans/borrow` | Borrow a book | ✅ | ✅ |
+| `POST` | `/api/loans/return` | Return a book | ✅ | ✅ |
+| `GET` | `/api/loans` | View loans | ✅ | ✅ |
+| `GET` | `/api/loans/{loanId}` | View a specific loan | ✅ | ✅ |
 
 ### Auth
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | Register a new user account | Public, Admin |
+| Method | Endpoint | Description | Admin | User | Public |
+|---|---|---|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user account | ✅ | ❌ | ✅ |
 
 ### User
-| Method | Endpoint | Description | Access |
-|---|---|---|---|
-| `GET` | `/api/user/detailed` | Get all users with detailed information | Admin |
-| `GET` | `/api/user/detailed/{userId}` | Get a specific user with detailed information | Admin |
-| `DELETE` | `/api/user/{userId}` | Delete a user | Admin |
+| Method | Endpoint | Description | Admin | User |
+|---|---|---|---|---|
+| `GET` | `/api/user/detailed` | Get all users with detailed information | ✅ | ❌ |
+| `GET` | `/api/user/detailed/{userId}` | Get a specific user with detailed information | ✅ | ❌ |
+| `DELETE` | `/api/user/{userId}` | Delete a user | ✅ | ❌ |
 
 ---
 
