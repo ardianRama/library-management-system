@@ -122,8 +122,8 @@ The `/api/auth/register` endpoint is publicly accessible.
 |---|---|---|---|
 | `POST` | `/api/loans/borrow` | Borrow a book | User, Admin |
 | `POST` | `/api/loans/return` | Return a book | User, Admin |
-| `GET` | `/api/loans` | View loans | User, Admin |
-| `GET` | `/api/loans/{loanId}` | View loan by ID | User, Admin |
+| `GET` | `/api/loans` | View all loans | User, Admin |
+| `GET` | `/api/loans/{loanId}` | View a specific loan | User, Admin |
 
 ### Auth
 | Method | Endpoint | Description | Access |
@@ -134,7 +134,7 @@ The `/api/auth/register` endpoint is publicly accessible.
 | Method | Endpoint | Description | Access |
 |---|---|---|---|
 | `GET` | `/api/user/detailed` | Get all users with detailed information | Admin |
-| `GET` | `/api/user/detailed/{userId}` | Get details of a specific user | Admin |
+| `GET` | `/api/user/detailed/{userId}` | Get a specific user with detailed information | Admin |
 | `DELETE` | `/api/user/{userId}` | Delete a user | Admin |
 
 ---
