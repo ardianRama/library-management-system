@@ -95,13 +95,16 @@ The API is documented with Swagger UI, which is the recommended way to explore a
 
 ## 🔐 Authentication
 
-The API is protected by Spring Security. When accessing Swagger UI at `http://localhost:8080/swagger-ui.html`, you will be prompted to log in before you can explore and test the endpoints.
+The API uses JWT-based authentication via Spring Security. See `application-example.properties` for instructions on how to configure all required environment variables, including the JWT secret key.
 
-Use the admin credentials configured in your application environment variables to sign in.
+The `/api/auth/register` and `/api/auth/login` endpoints are publicly accessible.
 
-The `/api/auth/register` endpoint is publicly accessible.
+### Authenticating in Swagger UI
 
-> **💡 Tip:** To create a user account, use a tool like Postman to call `/api/auth/register` directly, or log in as admin and use the `/api/auth/register` endpoint in Swagger UI.
+1. Use the `/api/auth/login` endpoint to log in and copy the token from the response
+2. Click the **Authorize** button at the top of the page, paste your token and click **Authorize**
+
+All subsequent requests will now automatically include your token.
 
 ---
 
@@ -128,9 +131,12 @@ The `/api/auth/register` endpoint is publicly accessible.
 | `GET` | `/api/loans/{loanId}` | View a specific loan | ✅ | ✅ |
 
 ### Auth
-| Method | Endpoint | Description | Admin | User | Public |
-|---|---|---|---|---|---|
-| `POST` | `/api/auth/register` | Register a new user account | ✅ | ❌ | ✅ |
+| Method | Endpoint | Description | Admin | User |
+|---|---|---|---|---|
+| `POST` | `/api/auth/register` | Register a new user account | ✅ | ❌ |
+| `POST` | `/api/auth/login` | Log in and receive a JWT token | ✅ | ✅ |
+
+> Both endpoints are publicly accessible — no authentication required.
 
 ### Users
 | Method | Endpoint | Description | Admin | User |
