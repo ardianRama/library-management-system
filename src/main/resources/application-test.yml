@@ -2,6 +2,7 @@
 # Required for running integration tests with @SpringBootTest
 # Uses in-memory H2 database for fast and isolated test execution
 # Provides default admin credentials for DataInitializer
+# Provides a hardcoded JWT secret key for testing purposes only
 
 spring:
   datasource:
@@ -18,3 +19,7 @@ app:
   admin:
     email: test@test.com
     password: test
+
+jwt:
+  secret: dCVzdC1zZWNyZXQta2V5LWZvci10ZXN0aW5nLW9ubHktMnI=
+  expiration: 24h
