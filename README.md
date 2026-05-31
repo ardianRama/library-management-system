@@ -97,12 +97,10 @@ The API is documented with Swagger UI, which is the recommended way to explore a
 
 The API uses JWT-based authentication via Spring Security. See `application-example.properties` for instructions on how to configure all required environment variables, including the JWT secret key.
 
-The `/api/auth/register` and `/api/auth/login` endpoints are publicly accessible.
-
 ### Authenticating in Swagger UI
 
-1. Use the `/api/auth/login` endpoint to log in and copy the token from the response
-2. Click the **Authorize** button at the top of the page, paste your token and click **Authorize**
+1. Use the `/api/auth/login` endpoint to log in and copy the token from the response.
+2. Click the **Authorize** button at the top of the page, paste your token and click **Authorize**.
 
 All subsequent requests will now automatically include your token.
 
@@ -136,7 +134,7 @@ All subsequent requests will now automatically include your token.
 | `POST` | `/api/auth/register` | Register a new user account | ✅ | ❌ |
 | `POST` | `/api/auth/login` | Log in and receive a JWT token | ✅ | ✅ |
 
-> Both endpoints are publicly accessible — no authentication required.
+> Both endpoints are publicly accessible — no authentication required. Note that `/api/auth/register` is intended for unregistered users to create a new account.
 
 ### Users
 | Method | Endpoint | Description | Admin | User |
